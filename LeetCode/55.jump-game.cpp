@@ -49,34 +49,20 @@ public:
         GOOD, BAD, UNKNOWN
     };
     
-    vector<Index> memo;
-
-    bool isAGoodPosition(int pos, vector<int> &nums) {
-        if (memo[pos] != Index::UNKNOWN) {
-            return memo[pos] == Index::GOOD;
-        }
+    bool canJump(vector<int>& nums) {
+        vector<Index> memo(nums.size(), Index::UNKNOWN);
+        memo[memo.size()-1] = Index::GOOD;
         
-        int furthestPosition = ((pos+nums[pos] < nums.size()-1) ? pos+nums[pos] : nums.size()-1);
-        // for (int p = pos+1; p <= furthestPosition; ++p) {
-        for (int p = furthestPosition; p >= pos+1; --p) {
-            if (isAGoodPosition(p, nums)) {
-                memo[p] = Index::GOOD;
-                return true;
+        for (int pos = nums.size()-2; pos >= 0; --pos) {
+            int furthestPos = (pos+nums[pos] < nums.size()-1) ? pos+nums[pos] : nums.size()-1;
+            for (int p = pos+1; p <= furthestPos; ++p) {
+                if (memo[p] == Index::GOOD) {
+                    memo[pos] = Index::GOOD;
+                    break;
+                }
             }
         }
 
-        memo[pos] = Index::BAD;
-        return false;
-    }
-
-    bool canJump(vector<int>& nums) {
-        memo.resize(nums.size());
-
-        for (auto &ind : memo) {
-            ind = Index::UNKNOWN;
-        }
-        memo[memo.size()-1] = Index::GOOD;
-
-        return isAGoodPosition(0, nums);
+        return memo[0] == Index::GOOD;
     }
 };
