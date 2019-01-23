@@ -39,9 +39,44 @@
  * 
  * 
  */
+
+/*
+ *  https://leetcode.com/problems/jump-game/solution/
+ */
 class Solution {
 public:
-    bool canJump(vector<int>& nums) {
+    enum class Index {
+        GOOD, BAD, UNKNOWN
+    };
+    
+    vector<Index> memo;
 
+    bool isAGoodPosition(int pos, vector<int> &nums) {
+        if (memo[pos] != Index::UNKNOWN) {
+            return memo[pos] == Index::GOOD;
+        }
+        
+        int furthestPosition = ((pos+nums[pos] < nums.size()-1) ? pos+nums[pos] : nums.size()-1);
+        // for (int p = pos+1; p <= furthestPosition; ++p) {
+        for (int p = furthestPosition; p >= pos+1; --p) {
+            if (isAGoodPosition(p, nums)) {
+                memo[p] = Index::GOOD;
+                return true;
+            }
+        }
+
+        memo[pos] = Index::BAD;
+        return false;
+    }
+
+    bool canJump(vector<int>& nums) {
+        memo.resize(nums.size());
+
+        for (auto &ind : memo) {
+            ind = Index::UNKNOWN;
+        }
+        memo[memo.size()-1] = Index::GOOD;
+
+        return isAGoodPosition(0, nums);
     }
 };
