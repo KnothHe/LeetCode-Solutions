@@ -45,24 +45,15 @@
  */
 class Solution {
 public:
-    enum class Index {
-        GOOD, BAD, UNKNOWN
-    };
-    
     bool canJump(vector<int>& nums) {
-        vector<Index> memo(nums.size(), Index::UNKNOWN);
-        memo[memo.size()-1] = Index::GOOD;
-        
-        for (int pos = nums.size()-2; pos >= 0; --pos) {
-            int furthestPos = (pos+nums[pos] < nums.size()-1) ? pos+nums[pos] : nums.size()-1;
-            for (int p = pos+1; p <= furthestPos; ++p) {
-                if (memo[p] == Index::GOOD) {
-                    memo[pos] = Index::GOOD;
-                    break;
-                }
+        int left_most_pos = nums.size()-1;
+
+        for (int i = nums.size()-2; i >= 0; --i) {
+            if (i+nums[i] >= left_most_pos) {
+                left_most_pos = i;
             }
         }
 
-        return memo[0] == Index::GOOD;
+        return left_most_pos == 0;
     }
 };
