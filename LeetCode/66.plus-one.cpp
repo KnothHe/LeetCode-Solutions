@@ -41,30 +41,21 @@ class Solution {
 public:
     vector<int> plusOne(vector<int>& digits) {
         vector<int> rst;
-        bool carry = false;
         int sum_of_one_digit = 0;
-        int index = digits.size()-1;
+        int carry = 1;
 
-        do {
-            carry = false;
-            sum_of_one_digit = digits[index] + 1;
+        for (int i = digits.size()-1; i >= 0; --i) {
+            sum_of_one_digit = digits[i]+carry;
             if (sum_of_one_digit > 9) {
                 sum_of_one_digit = 0;
-                carry = true;
+                carry = 1;
+            } else {
+                carry = 0;
             }
             rst.push_back(sum_of_one_digit);
-            index--;
-        } while (carry && index >= 0);
-
-        if (carry) {
-            rst.push_back(1);
-        } else {
-            while (index >= 0) {
-                rst.push_back(digits[index]);
-                index--;
-            }
         }
 
+        if (carry == 1) rst.push_back(1);
         reverse(rst.begin(), rst.end());
 
         return rst;
