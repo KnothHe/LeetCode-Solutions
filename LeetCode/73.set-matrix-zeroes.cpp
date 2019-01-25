@@ -58,42 +58,48 @@
  * 
  * 
  */
+
+/*
+ * reference: https://leetcode.com/problems/set-matrix-zeroes/solution/
+ */
+
 class Solution {
 public:
     void setZeroes(vector<vector<int>>& matrix) {
         int rlen = matrix.size();
-        int clen = 0;
-        if (rlen) clen = matrix[0].size();
-        for (int r = 0; r < rlen; ++r) {
-            for (int c = 0; c < clen; ++c) {
-                if (matrix[r][c] == 0) {
-                    setNeg(matrix, r, c);
-                }
-            }
-        }
-        for (int r = 0; r < rlen; ++r) {
-            for (int c = 0; c < clen; ++c) {
-                if (matrix[r][c] == INT_MIN+5) {
-                    matrix[r][c] = 0;
-                }
-            }
-        }
-    }
+        int clen = (rlen == 0) ? 0 : matrix[0].size();
+        bool rflag = false;
+        bool cflag = false;
 
-private:
-    void setNeg(vector<vector<int>>& matrix, int r, int c) {
-        int rlen = matrix.size();
-        int clen = 0;
-        if (rlen) clen = matrix[0].size();
-        for (int i = 0; i < clen; ++i) {
-            if (matrix[r][i] != 0) {
-                matrix[r][i] = INT_MIN+5;
+        for (int c = 0; c < clen; ++c)  {
+            if (matrix[0][c] == 0) cflag = true;
+        }
+        for (int r = 0; r < rlen; ++r) {
+            if (matrix[r][0] == 0) rflag = true;
+        }
+
+        for (int i = 1; i < rlen; ++i) {
+            for (int j = 1; j < clen; ++j) {
+                if (matrix[i][j] == 0) {
+                    matrix[i][0] = 0;
+                    matrix[0][j] = 0;
+                }
             }
         }
-        for (int i = 0; i < rlen; ++i) {
-            if (matrix[i][c] != 0) {
-                matrix[i][c] = INT_MIN+5;
+
+        for (int i = 1; i < rlen; ++i) {
+            for (int j = 1; j < clen; ++j) {
+                if (matrix[i][0] == 0 || matrix[0][j] == 0) {
+                    matrix[i][j] = 0;
+                }
             }
+        }
+
+        if (rflag) {
+            for (int r = 0; r < rlen; ++r) matrix[r][0] = 0;
+        }
+        if (cflag) {
+            for (int c = 0; c < clen; ++c) matrix[0][c] = 0;
         }
     }
 };
