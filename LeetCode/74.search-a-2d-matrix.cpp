@@ -46,29 +46,22 @@
  * Output: false
  * 
  */
+
+/*
+ * reference: https://leetcode.com/problems/search-a-2d-matrix/discuss/26220/Don't-treat-it-as-a-2D-matrix-just-treat-it-as-a-sorted-list
+ */
 class Solution {
 public:
     bool searchMatrix(vector<vector<int>>& matrix, int target) {
         int rLen = matrix.size();
-        int cLen = (rLen == 0) ? 0 : matrix[0].size();
-        int rLeft = 0, rRight = rLen-1;
-        int cLeft = 0, cRight = cLen-1;
+        int cLen = rLen == 0 ? 0 : matrix[0].size();
+        int left = 0, right = rLen * cLen - 1;
 
-        if (cLen == 0) return false;
-        while (rLeft <= rRight) {
-            int mid = rLeft + (rRight - rLeft) / 2;
-            int midNum = matrix[mid][0];
-            if (midNum > target) rRight = mid-1;
-            if (midNum < target) rLeft = mid+1;
-            if (midNum == target) return true;
-        }
-        int row = rRight;
-        if (row < 0 || row >= rLen) return false;
-        while (cLeft <= cRight) {
-            int mid = cLeft + (cRight - cLeft) / 2;
-            int midNum = matrix[row][mid];
-            if (midNum > target) cRight = mid-1;
-            if (midNum < target) cLeft = mid+1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            int midNum = matrix[mid/cLen][mid%cLen];
+            if (midNum > target) right = mid - 1;
+            if (midNum < target) left = mid + 1;
             if (midNum == target) return true;
         }
 
