@@ -35,25 +35,21 @@
  */
 
 /*
- * reference: https://leetcode.com/problems/subsets/discuss/27281/A-general-approach-to-backtracking-questions-in-Java-(Subsets-Permutations-Combination-Sum-Palindrome-Partitioning)
+ * reference: https://leetcode.com/problems/subsets/discuss/224190/c%2B%2B-beats-100-using-bit-manipulation
  */
 class Solution {
 public:
     vector<vector<int>> subsets(vector<int>& nums) {
-        vector<vector<int>> rst;
-        vector<int> tmpRst;
+        uint64_t size = 1<<nums.size();
+        vector<vector<int>> rst(size);
 
-        backtrack(nums, rst, tmpRst, 0);
+        for (int i = 0; i < size; i++) {
+            uint64_t b = 1;
+            for (int j = 0; j < nums.size(); ++j, b <<= 1) {
+                if ((i & b) == b) rst[i].push_back(nums[j]);
+            }
+        }
 
         return rst;
-    }
-
-    void backtrack(vector<int>& nums, vector<vector<int>>& rst, vector<int>& tmpRst, int start) {
-        rst.push_back(tmpRst);
-        for (int i = start; i < nums.size(); i++) {
-            tmpRst.push_back(nums[i]);
-            backtrack(nums, rst, tmpRst, i+1);
-            tmpRst.pop_back();
-        }
     }
 };
