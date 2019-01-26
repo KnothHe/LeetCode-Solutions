@@ -35,19 +35,24 @@
 class Solution {
 public:
     vector<vector<int>> subsetsWithDup(vector<int>& nums) {
-        uint64_t size = 1<<nums.size();
-        vector<vector<int>> res(size);
+        vector<vector<int>> res;
+        vector<int> tmpRes;
 
         sort(nums.begin(), nums.end());
-        for (int i = 0; i < size; ++i) {
-            uint64_t b = 1;
-            for (int j = 0; j < nums.size(); ++j, b <<= 1) {
-                if ((i & b) == b) res[i].push_back(nums[j]);
-            }
-        }
+        backtrack(nums, res, tmpRes, 0);
         sort(res.begin(), res.end());
         res.erase(unique(res.begin(), res.end()), res.end());
-
+        
         return res;
+    }
+
+private:
+    void backtrack(vector<int>& nums, vector<vector<int>>& res, vector<int>& tmpRes, int start) {
+        res.push_back(tmpRes);
+        for (int i = start; i < nums.size(); i++) {
+            tmpRes.push_back(nums[i]);
+            backtrack(nums, res, tmpRes, i+1);
+            tmpRes.pop_back();
+        }
     }
 };
