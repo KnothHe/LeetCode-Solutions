@@ -32,6 +32,10 @@
  * 
  * 
  */
+
+/*
+ * reference: https://leetcode.com/problems/subsets/discuss/27281/A-general-approach-to-backtracking-questions-in-Java-(Subsets-Permutations-Combination-Sum-Palindrome-Partitioning)
+ */
 class Solution {
 public:
     vector<vector<int>> subsetsWithDup(vector<int>& nums) {
@@ -40,8 +44,6 @@ public:
 
         sort(nums.begin(), nums.end());
         backtrack(nums, res, tmpRes, 0);
-        sort(res.begin(), res.end());
-        res.erase(unique(res.begin(), res.end()), res.end());
         
         return res;
     }
@@ -50,6 +52,7 @@ private:
     void backtrack(vector<int>& nums, vector<vector<int>>& res, vector<int>& tmpRes, int start) {
         res.push_back(tmpRes);
         for (int i = start; i < nums.size(); i++) {
+            if (i > start && nums[i] == nums[i-1]) continue;
             tmpRes.push_back(nums[i]);
             backtrack(nums, res, tmpRes, i+1);
             tmpRes.pop_back();
