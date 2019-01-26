@@ -46,7 +46,7 @@ public:
         for (int i = 0; i < size; i++) {
             uint64_t b = 1;
             for (int j = 0; j < nums.size(); ++j, b <<= 1) {
-                if ((i & b) == b) rst[i].push_back(nums[j]);
+                if ((i & b) != 0) rst[i].push_back(nums[j]);
             }
         }
 
