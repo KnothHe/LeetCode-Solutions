@@ -42,27 +42,14 @@
 class Solution {
 public:
     int maxProfit(vector<int>& prices) {
-        vector<int> memo(prices.size(), 0);
-
-        for (int i = 1; i < prices.size(); i++) {
-            if (prices[i] >= prices[i-1]) { memo[i] = memo[i-1]; }
-            else {
-                int k = i-1;
-                while (k > 0 && k != memo[k] && prices[k] >= prices[i]) {
-                    k = memo[k];
-                }
-                if (prices[i] >= prices[k]) { memo[i] = k; }
-                else memo[i] = i;
-            }
-        }
+        int maxNum = 0, minPrice = INT_MAX;
 
         for (int i = 0; i < prices.size(); i++) {
-            memo[i] = prices[i] - prices[memo[i]];
-        }
-
-        int maxNum = 0;
-        for (int n : memo) {
-            maxNum = max(n, maxNum);
+            if (prices[i] < minPrice) {
+                minPrice = prices[i];
+            } else {
+                maxNum = max(maxNum, prices[i] - minPrice);
+            }
         }
 
         return maxNum;
