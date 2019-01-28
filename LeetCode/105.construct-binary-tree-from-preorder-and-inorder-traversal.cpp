@@ -49,24 +49,26 @@
 class Solution {
 public:
     TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
-        return helper(0, 0, inorder.size()-1, preorder, inorder);
+        for (int i = 0; i < inorder.size(); i++) {
+            map[inorder[i]] = i;
+        }
+
+        return helper(0, 0, inorder.size()-1, preorder);
     }
 
 private:
-    TreeNode* helper(int preBeg, int inBeg, int inEnd, vector<int>& preorder, vector<int>& inorder) {
+    unordered_map<int, int> map;
+
+    TreeNode* helper(int preBeg, int inBeg, int inEnd, vector<int>& preorder) {
         if (preBeg >= preorder.size() || inBeg > inEnd) {
             return nullptr;
         }
         
         TreeNode* root = new TreeNode(preorder[preBeg]);
 
-        int index = inBeg;
-        while (index <= inEnd && inorder[index] != root->val) {
-            index++;
-        }
-
-        root->left = helper(preBeg+1, inBeg, index-1, preorder, inorder);
-        root->right = helper(preBeg+index-inBeg+1, index+1, inEnd, preorder, inorder);
+        int index = map[root->val];
+        root->left = helper(preBeg+1, inBeg, index-1, preorder);
+        root->right = helper(preBeg+index-inBeg+1, index+1, inEnd, preorder);
 
         return root;
     }
