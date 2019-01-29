@@ -61,19 +61,10 @@ public:
     int maxProfit(vector<int>& prices) {
         if (prices.size() <= 1) return 0;
         int sumProfit = 0;
-        int peak = prices[0];
-        int valley = prices[0];
-        int i = 0;
-        while (i < prices.size()-1) {
-            while (i < prices.size()-1 && prices[i] >= prices[i+1]) {
-                i++;
+        for (int i = 1; i < prices.size(); i++) {
+            if (prices[i] > prices[i-1]) {
+                sumProfit += prices[i] - prices[i-1];
             }
-            valley = prices[i];
-            while (i < prices.size()-1 && prices[i] <= prices[i+1]) {
-                i++;
-            }
-            peak = prices[i];
-            sumProfit += peak - valley;
         }
 
         return sumProfit;
