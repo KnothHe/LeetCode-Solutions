@@ -30,23 +30,25 @@
  * Explanation: The result cannot be 2, because [-2,-1] is not a subarray.
  * 
  */
+
+/*
+ * reference: https://leetcode.com/problems/maximum-product-subarray/discuss/48230/Possibly-simplest-solution-with-O(n)-time-complexity
+ */
 class Solution {
 public:
     int maxProduct(vector<int>& nums) {
-        vector<int> memo(nums.size(), 0);
-        for (int i = 0; i < nums.size(); i++) {
-            int product = nums[i];
-            int curMax = nums[i];
-            for (int j = i-1; j >= 0; j--) {
-                product *= nums[j];
-                curMax = max(curMax, product);
-            }
-            memo[i] = curMax;
-        }
+        if (nums.size() == 0) return 0;
+        int maxNum = nums[0];
+        int curMax = nums[0], curMin = nums[0];
 
-        int maxNum = numeric_limits<int>::min();
-        for (int &n : memo) {
-            maxNum = max(maxNum, n);
+        for (int i = 1; i < nums.size(); i++) {
+            if (nums[i] < 0) {
+                swap(curMax, curMin);
+            }
+
+            curMax = max(nums[i], curMax * nums[i]);
+            curMin = min(nums[i], curMin * nums[i]);
+            maxNum = max(maxNum, curMax);
         }
 
         return maxNum;
