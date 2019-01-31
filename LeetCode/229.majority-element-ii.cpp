@@ -29,25 +29,44 @@
  * Output: [1,2]
  * 
  */
+
+/*
+ * reference: https://leetcode.com/problems/majority-element-ii/discuss/63520/Boyer-Moore-Majority-Vote-algorithm-and-my-elaboration
+ */
 class Solution {
 public:
     vector<int> majorityElement(vector<int>& nums) {
-        unordered_map<int, int> map;
-        vector<int> res;
-        for (int &n : nums) {
-            if (map.find(n) != map.end()) {
-                map[n] += 1;
+        if (nums.size() == 0) return vector<int> { };
+        if (nums.size() == 1) return vector<int> { nums[0] };
+
+        int count1 = 0, count2 = 0, result1 = 0, result2 = 1;
+        for (const int &n : nums) {
+            if (n == result1) {
+                count1++;
+            } else if (n == result2) {
+                count2++;
+            } else if (count1 == 0) {
+                result1 = n;
+                count1 = 1;
+            } else if (count2 == 0) {
+                result2 = n;
+                count2 = 1;
             } else {
-                map[n] = 1;
+                count1--;
+                count2--;
             }
         }
 
-        for (auto m : map) {
-            if (m.second > nums.size()/3) {
-                res.push_back(m.first);
-            }
+        count1 = 0; count2 = 0;
+        for (const int &n : nums) {
+            if (n == result1) count1++;
+            if (n == result2) count2++;
         }
 
-        return res;
+        vector<int> result;
+        if (count1 > nums.size()/3) result.push_back(result1);
+        if (count2 > nums.size()/3) result.push_back(result2);
+
+        return result;
     }
 };
