@@ -29,22 +29,25 @@
  * which the time complexity is O(n log n). 
  * 
  */
+
+/*
+ * reference: https://leetcode.com/problems/minimum-size-subarray-sum/solution/
+ */
 class Solution {
 public:
     int minSubArrayLen(int s, vector<int>& nums) {
         if (nums.size() <= 0) return 0;
         int minNum = numeric_limits<int>::max();
-        for (int i = 0; i < nums.size(); i++) {
-            int sum = 0;
-            int j = i;
-            for (; j >= 0; j--) {
-                sum += nums[j];
-                if (sum >= s) break;
-            }
-            if (sum >= s) minNum = min(minNum, i-j+1);
+        vector<int> sums(nums.size());
+        sums[0] = nums[0];
+        for (int i = 1; i < nums.size(); i++) {
+            sums[i] = sums[i-1] + nums[i];
         }
-        if (minNum == numeric_limits<int>::max()) return 0;
-
-        return minNum;
+        for (int i = 0; i < nums.size(); i++) {
+            int target = s + sums[i-1];
+            auto bound = lower_bound(sums.begin(), sums.end(), target);
+            if (bound != sums.end()) minNum = min(minNum, static_cast<int>(bound - (sums.begin()+i)) + 1);
+        }
+        return minNum == numeric_limits<int>::max() ? 0 : minNum;
     }
 };
