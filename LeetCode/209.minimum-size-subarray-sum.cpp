@@ -36,17 +36,15 @@
 class Solution {
 public:
     int minSubArrayLen(int s, vector<int>& nums) {
-        if (nums.size() <= 0) return 0;
         int minNum = numeric_limits<int>::max();
-        vector<int> sums(nums.size());
-        sums[0] = nums[0];
-        for (int i = 1; i < nums.size(); i++) {
-            sums[i] = sums[i-1] + nums[i];
-        }
+        int left = 0;
+        int sum = 0;
         for (int i = 0; i < nums.size(); i++) {
-            int target = s + sums[i-1];
-            auto bound = lower_bound(sums.begin(), sums.end(), target);
-            if (bound != sums.end()) minNum = min(minNum, static_cast<int>(bound - (sums.begin()+i)) + 1);
+            sum += nums[i];
+            while (sum >= s) {
+                minNum = min(minNum, i - left + 1);
+                sum -= nums[left++];
+            }
         }
         return minNum == numeric_limits<int>::max() ? 0 : minNum;
     }
