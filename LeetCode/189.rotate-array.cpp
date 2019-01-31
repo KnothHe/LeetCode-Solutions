@@ -52,18 +52,19 @@ public:
     void rotate(vector<int>& nums, int k) {
         k = k % nums.size();
         if (k == 0) return;
-        int count = 0;
-        for (int start = 0; count < nums.size(); start++) {
-            int prev = nums[start];
-            int current = start;
-            do {
-                int next = (current+k)%nums.size();
-                int temp = nums[next];
-                nums[next] = prev;
-                prev = temp;
-                current = next;
-                count++;
-            } while (current != start);
+        reverse(nums, 0, nums.size()-1);
+        reverse(nums, 0, k-1);
+        reverse(nums, k, nums.size()-1);
+    }
+
+private:
+    void reverse(vector<int>& nums, int begin, int end) {
+        while (begin < end) {
+            int temp = nums[begin];
+            nums[begin] = nums[end];
+            nums[end] = temp;
+            begin++;
+            end--;
         }
     }
 };
