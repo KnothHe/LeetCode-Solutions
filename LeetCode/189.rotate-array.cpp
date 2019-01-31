@@ -43,23 +43,16 @@
  * Could you do it in-place with O(1) extra space?
  * 
  */
+
+/*
+ * reference: https://leetcode.com/problems/rotate-array/solution/
+ */
 class Solution {
 public:
     void rotate(vector<int>& nums, int k) {
-        if (k <= 0 || k == nums.size()) return;
-        k = k % nums.size();
         vector<int> tempVec(nums.size());
-        int i = 0, j = nums.size()-k;
-        while (j <= nums.size()-1) {
-            tempVec[i] = nums[j];
-            i++;
-            j++;
-        }
-        j = 0;
-        while (j < nums.size()-k) {
-            tempVec[i] = nums[j];
-            i++;
-            j++;
+        for (int i = 0; i < nums.size(); i++) {
+            tempVec[(i+k) % nums.size()] = nums[i];
         }
         nums = tempVec;
     }
