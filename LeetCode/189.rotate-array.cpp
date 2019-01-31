@@ -50,10 +50,20 @@
 class Solution {
 public:
     void rotate(vector<int>& nums, int k) {
-        vector<int> tempVec(nums.size());
-        for (int i = 0; i < nums.size(); i++) {
-            tempVec[(i+k) % nums.size()] = nums[i];
+        k = k % nums.size();
+        if (k == 0) return;
+        int count = 0;
+        for (int start = 0; count < nums.size(); start++) {
+            int prev = nums[start];
+            int current = start;
+            do {
+                int next = (current+k)%nums.size();
+                int temp = nums[next];
+                nums[next] = prev;
+                prev = temp;
+                current = next;
+                count++;
+            } while (current != start);
         }
-        nums = tempVec;
     }
 };
