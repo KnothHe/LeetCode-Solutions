@@ -25,25 +25,30 @@
  * Therefore its length is 4.
  * 
  * 
+ * solution reference: https://leetcode.com/problems/longest-consecutive-sequence/solution/
+ * 
  */
 class Solution {
 public:
     int longestConsecutive(vector<int>& nums) {
         if (nums.size() == 0) return 0;
 
-        sort(nums.begin(), nums.end());
-
-        int count = 1; 
+        unordered_set<int> set;
+        for (const int &n : nums) {
+            set.insert(n);
+        }
         int maxCount = 1;
-        for (int i = 1; i < nums.size(); i++) {
-            if (nums[i] == nums[i-1]+1) {
-                count++;
-            } else if (nums[i] > nums[i-1]) {
+        for (const int &n : set) {
+            if (set.find(n-1) == set.end()) {
+                int count = 1;
+                int num = n;
+                while (set.find(num+1) != set.end()) {
+                    count++;
+                    num = num+1;
+                }
                 maxCount = max(maxCount, count);
-                count = 1;
             }
         }
-
-        return max(maxCount, count);
+        return maxCount;
     }
 };
