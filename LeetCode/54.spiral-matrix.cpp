@@ -36,6 +36,8 @@
  * ]
  * Output: [1,2,3,4,8,12,11,10,9,5,6,7]
  * 
+ * solution reference: https://leetcode.com/problems/spiral-matrix/solution/
+ * 
  */
 class Solution {
 public:
@@ -43,22 +45,24 @@ public:
         if (matrix.empty()) return vector<int> { };
         int rLen = matrix.size();
         int cLen = matrix[0].size();
-        vector<int> result(rLen * cLen);
-        int left = 0, top = 0, right = cLen-1, bottom = rLen-1;
-        for (int i = 0; i < result.size(); ) {
-            for (int j = left; i < result.size() && j <= right; j++) {
-                result[i++] = matrix[top][j];
+        vector<vector<bool>> marked(rLen, vector<bool>(cLen, false));
+        vector<int> result;
+        vector<int> dr {0, 1,  0, -1};
+        vector<int> dc {1, 0, -1,  0};
+        int r = 0, c = 0, di = 0;
+        for (int i = 0; i < rLen * cLen; i++) {
+            result.push_back(matrix[r][c]);
+            marked[r][c] = true;
+            int rr = r + dr[di];
+            int cc = c + dc[di];
+            if (rr >= 0 && rr < rLen && cc >= 0 && cc < cLen && !marked[rr][cc]) {
+                r = rr;
+                c = cc;
+            } else {
+                di = (di + 1) % 4;
+                r += dr[di];
+                c += dc[di];
             }
-            for (int j = top+1; i < result.size() && j <= bottom; j++) { 
-                result[i++] = matrix[j][right];
-            }
-            for (int j = right-1; i < result.size() && j >= left; j--) {
-                result[i++] = matrix[bottom][j];
-            }
-            for (int j = bottom-1; i < result.size() && j > top; j--) {
-                result[i++] = matrix[j][left];
-            }
-            left++; top++; right--; bottom--;
         }
 
         return result;
