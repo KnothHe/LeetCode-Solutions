@@ -30,30 +30,36 @@
  * Input: nums = [5,7,7,8,8,10], target = 6
  * Output: [-1,-1]
  * 
+ * solution reference: https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/solution/
+ * 
  */
 class Solution {
 public:
     vector<int> searchRange(vector<int>& nums, int target) {
-        int lo = 0, hi = nums.size()-1;
-        int index = -1;
-        while (lo <= hi)  {
+        vector<int> result { -1, -1 };
+
+        int leftIndex = extremeInsertionIndex(nums, target, true);
+        if (leftIndex == nums.size() || nums[leftIndex] != target) {
+            return vector<int> { -1, -1 };
+        }
+        int rightIndex = extremeInsertionIndex(nums, target, false)-1;
+
+        return vector<int> { leftIndex, rightIndex };
+    }
+
+private:
+    int extremeInsertionIndex(vector<int>& nums, int target, bool left) {
+        int lo = 0, hi = nums.size();
+        while (lo < hi) {
             int mid = lo + (hi - lo) / 2;
-            if (nums[mid] == target) {
-                index = mid;
-                break;
+            if (nums[mid] > target || (left && target == nums[mid])) {
+                hi = mid;
             } else {
-                if (nums[mid] > target) {
-                    hi = mid-1;
-                } else {
-                    lo = mid+1;
-                }
+                lo = mid+1;
             }
         }
-        int left = index, right = index;
-        while (left > 0 && nums[left-1] == target) { left--; }
-        while (right < nums.size()-1 && nums[right+1] == target) { right++; }
-
-        return vector<int> { left, right };
+        
+        return lo;
     }
 
 };
