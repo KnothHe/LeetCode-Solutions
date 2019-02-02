@@ -31,17 +31,17 @@
  * Note:
  * Your algorithm should run in linear runtime complexity. Could you implement
  * it using only constant extra space complexity?
+ * 
+ * solution reference: https://leetcode.com/problems/missing-number/solution/ 
+ * 
  */
 class Solution {
 public:
     int missingNumber(vector<int>& nums) {
-        vector<bool> bools(nums.size()+1, false);
-        for (const int &n : nums) {
-            bools[n] = true;
+        int missing = nums.size();
+        for (int i = 0; i < nums.size(); i++) {
+            missing ^= i ^ nums[i];
         }
-        for (int i = 0; i < bools.size(); i++) {
-            if (!bools[i]) return i;
-        }
-        return -1;
+        return missing;
     }
 };
