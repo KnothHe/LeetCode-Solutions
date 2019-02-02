@@ -41,13 +41,12 @@ public:
         vector<vector<int>> result;
         nums[0] = 1;
         for (int i = 0; i < numRows; i++) {
+            vector<int> oneRow(i+1);
             for (int j = i; j > 0; j--) {
                 nums[j] += nums[j-1];
-            }
-            vector<int> oneRow(i+1);
-            for (int j = 0; j <= i; j++) {
                 oneRow[j] = nums[j];
             }
+            oneRow[0] = 1;
             result.push_back(oneRow);
         }
         return result;
