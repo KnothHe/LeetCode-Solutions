@@ -58,28 +58,17 @@
  * ⁠ [16, 7,10,11]
  * ]
  * 
- * solution reference: https://leetcode.com/problems/rotate-image/solution/
+ * solution reference: https://leetcode.com/problems/rotate-image/discuss/18872/A-common-method-to-rotate-the-image
  * 
  */
 class Solution {
 public:
     void rotate(vector<vector<int>>& matrix) {
         if (matrix.size() <= 1) return;
-        const int len = matrix.size();
-        for (int i = 0; i < len / 2 + len % 2; i++) {
-            for (int j = 0; j < len / 2; j++) {
-                int row = i;
-                int col = j;
-                int prev = matrix[row][col];
-                for (int k = 0; k < 4; k++) {
-                    int nextRow = col;
-                    int nextCol = len - row - 1;
-                    int temp = matrix[nextRow][nextCol];
-                    matrix[nextRow][nextCol] = prev;
-                    prev = temp;
-                    row = nextRow;
-                    col = nextCol;
-                }
+        reverse(matrix.begin(), matrix.end());
+        for (int i = 0; i < matrix.size(); i++) {
+            for (int j = 0; j < i; j++) {
+                swap(matrix[i][j], matrix[j][i]);
             }
         }
     }
