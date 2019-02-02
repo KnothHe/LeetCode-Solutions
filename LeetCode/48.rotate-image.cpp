@@ -58,40 +58,29 @@
  * ⁠ [16, 7,10,11]
  * ]
  * 
+ * solution reference: https://leetcode.com/problems/rotate-image/solution/
  * 
  */
 class Solution {
 public:
     void rotate(vector<vector<int>>& matrix) {
         if (matrix.size() <= 1) return;
-        int len = matrix.size();
-        int layer = len / 2;
-        int leftTop = 0, rightBottom = len-1;
-        vector<vector<int>> indexs(4, vector<int>(2));
-        for (int i = 0; i < layer; i++) {
-            indexs[0][0] = leftTop; 
-            indexs[0][1] = leftTop;
-            indexs[1][0] = leftTop;
-            indexs[1][1] = rightBottom;
-            indexs[2][0] = rightBottom;
-            indexs[2][1] = rightBottom;
-            indexs[3][0] = rightBottom;
-            indexs[3][1] = leftTop;
-            int times = rightBottom - leftTop;
-            for (int j = 0; j < times; j++) {
-                int prev = matrix[indexs[3][0]][indexs[3][1]];
-                for (int k = 0; k <= 3; k++) {
-                    int temp = matrix[indexs[k][0]][indexs[k][1]];
-                    matrix[indexs[k][0]][indexs[k][1]] = prev;
+        const int len = matrix.size();
+        for (int i = 0; i < len / 2 + len % 2; i++) {
+            for (int j = 0; j < len / 2; j++) {
+                int row = i;
+                int col = j;
+                int prev = matrix[row][col];
+                for (int k = 0; k < 4; k++) {
+                    int nextRow = col;
+                    int nextCol = len - row - 1;
+                    int temp = matrix[nextRow][nextCol];
+                    matrix[nextRow][nextCol] = prev;
                     prev = temp;
+                    row = nextRow;
+                    col = nextCol;
                 }
-                indexs[0][1] += 1;
-                indexs[1][0] += 1;
-                indexs[2][1] -= 1;
-                indexs[3][0] -= 1;
             }
-            leftTop++;
-            rightBottom--;
         }
     }
 };
