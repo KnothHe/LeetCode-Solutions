@@ -31,16 +31,20 @@
 class Solution {
 public:
     int trap(vector<int>& height) {
+        int len = height.size();
+        if (len <= 1) return 0;
+        vector<int> left(len), right(len);
+        left[0] = height[0];
+        for (int i = 1; i < len; i++) {
+            left[i] = max(left[i-1], height[i]);
+        }
+        right[len-1] = height[len-1];
+        for (int i = len-2; i >= 0; i--) {
+            right[i] = max(right[i+1], height[i]);
+        }
         int sum = 0;
-        for (int i = 0; i < height.size(); i++) {
-            int left = 0, right = 0;
-            for (int j = i; j >= 0; j--) {
-                left = max(left, height[j]);
-            }
-            for (int j = i; j < height.size(); j++) {
-                right = max(right, height[j]);
-            }
-            sum += min(left, right) - height[i];
+        for (int i = 0; i < len; i++) {
+            sum += min(left[i], right[i]) - height[i];
         }
         return sum;
     }
