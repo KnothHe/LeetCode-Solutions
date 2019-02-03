@@ -31,19 +31,25 @@
 class Solution {
 public:
     int trap(vector<int>& height) {
+        int left = 0, right = height.size()-1;
+        int left_max = 0, right_max = 0;
         int sum = 0;
-        stack<int> st;
-        int current = 0;
-        while (current < height.size()) {
-            while (!st.empty() && height[current] >= height[st.top()]) {
-                int top = st.top();
-                st.pop();
-                if (st.empty()) break;
-                int curDistance = current - st.top() - 1;
-                int curHeight = min(height[current], height[st.top()]) - height[top];
-                sum += curDistance * curHeight;
+        while (left < right) {
+            if (height[left] < height[right]) {
+                if (height[left] >= left_max) {
+                    left_max = height[left];
+                } else {
+                    sum += left_max - height[left];
+                }
+                left++;
+            } else {
+                if (height[right] >= right_max) {
+                    right_max = height[right];
+                } else {
+                    sum += right_max - height[right];
+                }
+                right--;
             }
-            st.push(current++);
         }
         return sum;
     }
