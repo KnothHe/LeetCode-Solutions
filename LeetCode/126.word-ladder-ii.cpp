@@ -67,47 +67,46 @@
 class Solution {
 public:
     vector<vector<string>> findLadders(string beginWord, string endWord, vector<string>& wordList) {
-        // first construct a transformation list and find the index of endWord;
-        int begin = -1;
-        vector<vector<int>> transformList(wordList.size(), vector<int>{ });
+        vector<vector<int>> next(wordList.size(), vector<int> { });
+        // begin: index of endWord
+        // end: index of beginWord
+        int begin = -1, end = -1;
         for (int i = 0; i < wordList.size(); i++) {
+            if (wordList[i] == beginWord) {
+                end = i;
+            }
+        }
+        for (int i = 0; i < wordList.size(); i++) {
+            if (end == -1 && isNext(wordList[i], beginWord)) {
+                next[i].push_back(-1);
+            }
             if (wordList[i] == endWord) {
-                begin = i;  
-            }
-            for (int j = i-1; j >= 0; j--) {
-                if (canTransfrom(wordList[i], wordList[j]) && wordList[j] != endWord) {
-                    transformList[i].push_back(j);
-                }
-            }
+                begin = i;
+            } 
             for (int j = i+1; j < wordList.size(); j++) {
-                if (canTransfrom(wordList[i], wordList[j]) && wordList[j] != endWord) {
-                    transformList[i].push_back(j);
+                if (isNext(wordList[i], wordList[j])) {
+                    next[i].push_back(j);
+                    next[j].push_back(i);
                 }
-            }
-            if (canTransfrom(wordList[i], beginWord)) {
-                transformList[i].push_back(-1);
             }
         }
         if (begin == -1) return vector<vector<string>> { };
+        vector<bool> visited(wordList.size(), false);
+        int minLen = bfs(next, visited, begin, end);
         vector<vector<string>> result;
-        vector<string> oneResult { wordList[begin] };
-        unordered_set<int> set { };
-        int minLen = INT_MAX;
-        // then travel
-        travel(wordList, transformList, result, oneResult, set, begin, beginWord, minLen);
-        // finally
-        vector<vector<string>> trueResult;
-        for (vector<string> &vec : result) {
-            if (vec.size() == minLen) {
-                reverse(vec.begin(), vec.end());
-                trueResult.push_back(vec);
-            }
+        vector<string> oneResult { endWord };
+        for (int i = 0; i < visited.size(); i++) {
+            visited[i] = false;
         }
-        return trueResult;
+        dfs(next, wordList, visited, result, oneResult, begin, beginWord, minLen);
+        for (auto &vec : result) {
+            reverse(vec.begin(), vec.end());
+        }
+        return result;
     }
 
 private:
-    bool canTransfrom(string word, string next) {
+    bool isNext(string word, string next) {
         int count = 0;
         int len = min(word.size(), next.size());
         for (int i = 0; i < len; i++) {
@@ -118,25 +117,52 @@ private:
         return count == 1;
     }
 
-    void travel(vector<string>& wordList, vector<vector<int>> &transformList, vector<vector<string>> &result,
-                vector<string> &oneResult, unordered_set<int> &set, int index, string target, int &minLen) {
-        if (oneResult.size() > minLen) return;
-        if (index == -1) {
-            oneResult.push_back(target);
-            result.push_back(oneResult);
-            minLen = min(minLen, static_cast<int>(oneResult.size()));
-            oneResult.pop_back();
+    int bfs(vector<vector<int>> &next, vector<bool>& visited, int begin, int end) {
+        queue<int> qu;
+        qu.push(begin);
+        visited[begin] = true;
+        vector<int> distTo(visited.size(), 0);
+        distTo[begin] = 1;
+        int front;
+
+        while(!qu.empty()) {
+            front = qu.front();
+            qu.pop();
+            for (const int &n : next[front]) {
+                if (n == -1) {
+                    break;
+                } else if (!visited[n]) {
+                    qu.push(n);
+                    visited[n] = true; 
+                    distTo[n] = distTo[front]+1;
+                }
+            }
+        }
+
+        return (end == -1) ? distTo[front]+1 : distTo[end];
+    }
+
+    void dfs(vector<vector<int>> &next, vector<string> &wordList, vector<bool> &visited,
+             vector<vector<string>> &result, vector<string> &oneResult, int index,
+             const string &target, int minLen) {
+         if (oneResult.size() == minLen) {
+            if (index == -1 || oneResult.back() == target) {
+                result.push_back(oneResult);
+            } 
             return;
         }
-        for (const int &n : transformList[index]) {
+
+        for (const int &n : next[index]) {
             if (n == -1) {
-                travel(wordList, transformList, result, oneResult, set, -1, target, minLen);
-            } else if (set.find(n) == set.end()) {
-                auto it = set.insert(n);
-                oneResult.push_back(wordList[n]);
-                travel(wordList, transformList, result, oneResult, set, n, target, minLen);
-                set.erase(it.first);
+                oneResult.push_back(target);
+                dfs(next, wordList, visited, result, oneResult, -1, target, minLen);
                 oneResult.pop_back();
+            } else if (!visited[n]) {
+                visited[n] = true;
+                oneResult.push_back(wordList[n]);
+                dfs(next, wordList, visited, result, oneResult, n, target, minLen);
+                oneResult.pop_back();
+                visited[n] = false;
             }
         }
     }
