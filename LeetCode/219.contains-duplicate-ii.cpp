@@ -40,27 +40,26 @@
  * 
  * 
  * 
- * 
+ * reference: https://leetcode.com/problems/contains-duplicate-ii/discuss/61390/C%2B%2B-solution-with-unordered_set
  * 
  */
 class Solution {
 public:
     bool containsNearbyDuplicate(vector<int>& nums, int k) {
-        int len = nums.size();
-        int minDiff = numeric_limits<int>::max();
-        for (int i = 0; i < len; i++) {
-            int index = -1;
-            for (int j = i-1; j >= 0; j--) {
-                if (nums[j] == nums[i]) {
-                    index = j;
-                    break;
-                }
+        unordered_set<int> s;
+
+        if (k <= 0) return false;
+        if (k >= nums.size()) k = nums.size()-1;
+
+        for (int i = 0; i < nums.size(); i++) {
+            if (i > k) {
+                s.erase(nums[i-k-1]);
             }
-            if (index != -1) {
-                minDiff = min(i-index, minDiff);
+            if (!s.insert(nums[i]).second) {
+                return true;
             }
         }
 
-        return minDiff <= k;
+        return false;
     }
 };
