@@ -73,11 +73,10 @@ public:
         int rowLen = board.size();
         if (rowLen == 0) return;
         int colLen = board[0].size();
-        vector<vector<int>> nextBoard(rowLen, vector<int>(colLen, 0));
 
         for (int i = 0; i < rowLen; i++) {
             for (int j = 0; j < colLen; j++) {
-                int state = board[i][j];
+                int state = board[i][j] & 1;
                 int count = getNumberOfNeighbors(board, i, j);
                 if (state == 1 && (count < 2 || count > 3)) {
                     state = 0;
@@ -85,13 +84,13 @@ public:
                 if (state == 0 && count == 3) {
                     state = 1;
                 }
-                nextBoard[i][j] = state;
+                board[i][j] = board[i][j] | (state << 1) ;
             }
         }
 
-        for (int i = 0; i < rowLen; i++) {
-            for (int j = 0; j < colLen; j++) {
-                board[i][j] = nextBoard[i][j];
+        for (auto& vec : board) {
+            for (auto& n : vec) {
+                n = n >> 1;
             }
         }
     }
@@ -108,7 +107,7 @@ private:
                 int nr = r + i;
                 int nc = c + j;
                 if (nr >= 0 && nr < rowLen && nc >= 0 && 
-                nc < colLen && board[nr][nc] == 1) {
+                nc < colLen && board[nr][nc] & 1) {
                         count++;
                 }
             }
