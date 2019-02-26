@@ -37,17 +37,26 @@
  * There is only one duplicate number in the array, but it could be repeated
  * more than once.
  * 
+ * reference: https://leetcode.com/problems/find-the-duplicate-number/solution/
  * 
  */
 class Solution {
 public:
     int findDuplicate(vector<int>& nums) {
-        unordered_set<int> s;
-        for (const auto& n : nums) {
-            if (!s.insert(n).second) {
-                return n;
-            }
+        int tortoise = nums[0];
+        int hare = nums[0];
+        do {
+            tortoise = nums[tortoise];
+            hare = nums[nums[hare]];
+        } while (tortoise != hare);
+
+        int ptr1 = nums[0];
+        int ptr2 = tortoise;
+        while (ptr1 != ptr2) {
+            ptr1 = nums[ptr1];
+            ptr2 = nums[ptr2];
         }
-        return -1;
+
+        return ptr1;
     }
 };
