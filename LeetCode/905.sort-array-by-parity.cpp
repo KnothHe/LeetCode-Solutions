@@ -35,25 +35,19 @@
  * 1 <= A.length <= 5000
  * 0 <= A[i] <= 5000
  * 
- * 
+ * reference: https://leetcode.com/problems/sort-array-by-parity/discuss/170734/C%2B%2BJava-In-Place-Swap
  * 
  */
 class Solution {
 public:
     vector<int> sortArrayByParity(vector<int>& A) {
-        int left = 0, right = A.size()-1;
-        while (left < right) {
-            while (left < right && A[left] % 2 == 0) {
-                left++;
+        for (int i = 0, j = 0; j < A.size(); j++) {
+            if (A[j] % 2 == 0) {
+                swap(A[i], A[j]);
+                i++;
             }
-            while (right > left && A[right] % 2 != 0) {
-                right--;
-            }
-            swap(A[left], A[right]);
-            left++;
-            right--;
         }
-
+        
         return A;
     }
 };
