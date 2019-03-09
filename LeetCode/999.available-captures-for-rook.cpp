@@ -71,6 +71,8 @@
  * board[i][j] is either 'R', '.', 'B', or 'p'
  * There is exactly one cell with board[i][j] == 'R'
  * 
+ * reference; https://leetcode.com/problems/available-captures-for-rook/discuss/242924/C%2B%2BJava-search-and-capture
+ * use function to reduce redundent code
  * 
  */
 class Solution {
@@ -79,52 +81,29 @@ public:
         int rowLen = board.size();
         int colLen = (rowLen == 0 ? 0 : board[0].size());
 
-        int rowIndex = -1, colIndex = -1;        
+        int x = -1, y = -1;        
         for (int i = 0; i < rowLen; i++) {
             for (int j = 0; j < colLen; j++) {
                 if (board[i][j] == 'R') {
-                    rowIndex = i;
-                    colIndex = j;
-                    break;
+                    return count(board, i, j, 0, 1) + count(board, i, j, 0, -1) +
+                        count(board, i, j, 1, 0) + count(board, i, j, -1, 0);
                 }
             }
         }
 
-        if (rowIndex == -1 || colIndex == -1) return 0;
+        return 0;
+    }
 
-        int count = 0;
-        for (int i = rowIndex, j = colIndex; j < colLen; j++) {
-            if (board[i][j] == 'B') break;
-            if (board[i][j] == 'p') {
-                count++;
-                break;
-            }
+private:
+    int count(vector<vector<char>> board, int x, int y, int dx, int dy) {
+        int rowLen = board.size();
+        int colLen = (rowLen == 0 ? 0 : board[0].size());
+        while (x >= 0 && x < rowLen && y >= 0 && y < colLen) {
+            if (board[x][y] == 'B') return 0;
+            if (board[x][y] == 'p') return 1;
+            x += dx;
+            y += dy;
         }
-
-        for (int i = rowIndex, j = colIndex; j >= 0; j--) {
-            if (board[i][j] == 'B') break;
-            if (board[i][j] == 'p') {
-                count++;
-                break;
-            }
-        }
-
-        for (int i = rowIndex, j = colIndex; i < rowLen; i++) {
-            if (board[i][j] == 'B') break;
-            if (board[i][j] == 'p') {
-                count++;
-                break;
-            }
-        }
-
-        for (int i = rowIndex, j = colIndex; i >= 0; i--) {
-            if (board[i][j] == 'B') break;
-            if (board[i][j] == 'p') {
-                count++;
-                break;
-            }
-        }
-
-        return count;
+        return 0;
     }
 };
