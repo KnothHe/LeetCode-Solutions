@@ -56,12 +56,14 @@ public:
         for (int i = 0; i < row; i++) {
             int left = 0, right = col-1;
             while (left <= right) {
-                if (left == right) {
-                    A[i][left] = !A[i][left];
+                if (A[i][left] == A[i][right]) {
+                    if (left != right) {
+                        A[i][left] = !A[i][left];
+                        A[i][right] = !A[i][right];
+                    } else {
+                        A[i][left] = !A[i][left];
+                    }
                 }
-                swap(A[i][left], A[i][right]);
-                A[i][left] = !A[i][left];
-                A[i][right] = !A[i][right];
                 left++;
                 right--;
             }
