@@ -37,7 +37,18 @@
 class Solution {
 public:
     int arrayPairSum(vector<int>& nums) {
-        sort(nums.begin(), nums.end());
+        vector<int> count(20005, 0);
+        for (const auto& n : nums) {
+            count[n+10000]++;
+        }
+        int c = 0;
+        for (int i = 0; i < count.size(); i++) {
+            for (int j = 0; j < count[i]; j++) {
+                nums[c] = i-10000;
+                c++;
+            }
+        }
+
         int result = 0;
         for(int i = 0; i < nums.size(); i += 2)
         {
