@@ -59,14 +59,27 @@ class Solution {
 public:
     vector<int> sumEvenAfterQueries(vector<int>& A, vector<vector<int>>& queries) {
         vector<int> result;
+        int sum = 0;
+        for (const auto &n : A) {
+            if (n % 2 == 0)
+                sum += n;
+        }
+
         for (const auto &vec : queries) {
-            A[vec[1]] += vec[0];
-            int sum = 0;
-            for (const auto &n : A) {
-                if (n % 2 == 0) {
-                    sum += n;
+            int new_value = A[vec[1]] + vec[0];
+            int old_value = A[vec[1]];
+            if (old_value % 2 == 0) {
+                if (new_value % 2 == 0) {
+                    sum += vec[0];
+                } else {
+                    sum -= old_value;
+                }
+            } else {
+                if (new_value % 2 == 0) {
+                    sum += new_value;
                 }
             }
+            A[vec[1]] = new_value;
             result.push_back(sum);
         }
 
