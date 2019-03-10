@@ -52,41 +52,27 @@
 class Solution {
 public:
     vector<string> commonChars(vector<string>& A) {
-        for (int i = 0; i < A.size(); i++) {
-            count.push_back(unordered_map<char, int> { });
-            for (int j = 0;  j < A[0].size(); j++) {
-                char ch = A[i][j];
-                if (count[i].find(ch) == count[i].end()) {
-                    count[i][ch] = 1;
-                } else {
-                    count[i][ch]++;
-                }
+        vector<int> common(26, numeric_limits<int>::max());
+
+        for (const auto &str : A) {
+            vector<int> count(26, 0);
+            for (const auto &c : str) {
+                count[c-'a']++;
+            }
+            for (int i = 0; i < count.size(); i++) {
+                common[i] = min(common[i], count[i]);
             }
         }
-        for (char ch = 'a'; ch <= 'z'; ch++) {
-            common[ch] = numeric_limits<int>::max();
-        }
-        for (int i = 0; i < count.size(); i++) {
-            for (char ch = 'a'; ch <= 'z'; ch++) {
-                if (count[i].find(ch) != count[i].end()) {
-                    common[ch] = min(common[ch], count[i][ch]);
-                } else {
-                    common[ch] = 0;
-                }
-            }
-        }
+
         vector<string> result;
-        for (char ch = 'a'; ch <= 'z'; ch++) {
-            if (common[ch] != numeric_limits<int>::max()) {
-                for (int c = 0; c < common[ch]; c++){
-                    result.push_back(string(1, ch));
-                } 
+        for(int i = 0; i < common.size(); i++) {
+            if (common[i] != numeric_limits<int>::max()) {
+                for (int j = 0; j < common[i]; j++) {
+                    result.push_back(string(1, i+'a'));
+                }
             }
         }
+        
         return result;
     }
-
-private:
-    vector<unordered_map<char, int>> count;
-    unordered_map<char, int> common;
 };
