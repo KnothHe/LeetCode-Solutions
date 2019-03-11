@@ -26,19 +26,19 @@
  * Output:
  * [2,3]
  * 
+ * reference: https://leetcode.com/problems/find-all-duplicates-in-an-array/discuss/92387/Java-Simple-Solution
+ * 
  */
 class Solution {
 public:
     vector<int> findDuplicates(vector<int>& nums) {
         vector<int> res;
-        vector<int> cnt(nums.size()+1, 0);
         for (int i = 0; i < nums.size(); i++) {
-            cnt[nums[i]]++;
-        }
-        for (int i = 0; i < cnt.size(); i++) {
-            if (cnt[i] == 2) {
-                res.push_back(i);
+            int idx = abs(nums[i])-1;
+            if (nums[idx] < 0) {
+                res.push_back(idx+1);
             }
+            nums[idx] = -nums[idx];
         }
         return res;
     }
