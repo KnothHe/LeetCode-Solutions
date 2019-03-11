@@ -71,21 +71,11 @@ class Solution {
 public:
     bool isToeplitzMatrix(vector<vector<int>>& matrix) {
         int rowLen = matrix.size();
-        int colLen = (rowLen == 0 ? 0 : matrix[0].size());
-        for (int i = colLen-1; i >= 0; --i) {
-            int number = matrix[0][i];
-            int m = 1, n = i+1;
-            while (m < rowLen && n < colLen) {
-                if (matrix[m][n] != number) return false;
-                ++m; ++n;
-            }
-        }
-        for (int i = 1; i < rowLen; ++i) {
-            int number = matrix[i][0];
-            int m = i+1, n = 1;
-            while (m < rowLen && n < colLen) {
-                if (matrix[m][n] != number) return false;
-                ++m; ++n;
+        int colLen = matrix[0].size();
+        for (int r = 0; r < rowLen; ++r) {
+            for (int c = 0; c < colLen; ++c) {
+                if (r-1 >= 0 && c-1 >= 0 && matrix[r][c] != matrix[r-1][c-1])
+                    return false;
             }
         }
         return true;
