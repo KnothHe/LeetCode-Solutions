@@ -71,20 +71,14 @@ public:
     vector<vector<int>> matrixReshape(vector<vector<int>>& nums, int r, int c) {
         int rowLen = nums.size();
         int colLen = (rowLen == 0 ? 0 : nums[0].size());
-        if (rowLen * colLen != r * c) return nums;
-        vector<int> oneRow;
+        if (rowLen * colLen != r * c ||
+            (rowLen == r && colLen == c)) return nums;
+        vector<vector<int>> res(r, vector<int>(c));
+        int count = 0;
         for (int i = 0; i < rowLen; ++i) {
-            for (int j = 0;  j < colLen; ++j) {
-                oneRow.push_back(nums[i][j]);
-            }
-        }
-        vector<vector<int>> res(r, vector<int>(c, 0));
-        int idx = 0;
-        for (int i = 0; i < r; ++i) {
-            for (int j = 0; j < c; ++j) {
-                if (idx == oneRow.size()) break;
-                res[i][j] = oneRow[idx];
-                ++idx;
+            for (int j = 0; j < colLen; ++j) {
+                res[count/c][count%c] = nums[i][j];
+                count++;
             }
         }
         return res;
