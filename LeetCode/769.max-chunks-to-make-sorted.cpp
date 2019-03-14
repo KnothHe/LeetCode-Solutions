@@ -53,26 +53,18 @@
 class Solution {
 public:
     int maxChunksToSorted(vector<int>& arr) {
-        vector<bool> used(arr.size(), false);
-        int curMinNum = 0;
         int curMaxNum = 0;
         int cnt = 0;
 
-        for (const auto& n : arr) {
-            used[n] = true;
-            curMaxNum = max(curMaxNum, n);
-            if (allUsed(used, curMinNum, curMaxNum)) {
+        for (int i = 0; i < arr.size(); ++i) {
+            curMaxNum = max(curMaxNum, arr[i]);
+            if (curMaxNum == i) {
                 cnt++;
-                curMinNum = curMaxNum+1;
             }
         }
-    }
 
-private:
-    bool allUsed(vector<bool>& used, int lo, int hi) {
-        for (int i = lo; i <= hi; i++) {
-            if (!used[i]) return false;
-        }
-        return true;
+        return cnt;
     }
 };
+
+
