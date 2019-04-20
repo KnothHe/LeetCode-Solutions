@@ -34,7 +34,7 @@ void slove()
     for (int flag = 0; flag <= 3; ++flag) {
         sort(stu.begin(), stu.end(), Cmp(flag));
         stu[0]->rank[flag] = 1;
-        for (int i = 1; i < stu.size(); ++i) {
+        for (size_t i = 1; i < stu.size(); ++i) {
             stu[i]->rank[flag] = i+1;
             if (stu[i]->score[flag] == stu[i-1]->score[flag]) {
                 stu[i]->rank[flag] = stu[i-1]->rank[flag];
@@ -42,19 +42,13 @@ void slove()
         }
     }
 
-    for (int i = 0; i < stu.size(); ++i) {
+    for (size_t i = 0; i < stu.size(); ++i) {
         exist[stu[i]->id] = i;
-        int best = 0, minR = stu[i]->rank[0];
-        for (int j = 1; j <= 3; ++j) {
-            if (stu[i]->rank[j] < minR) {
-                minR = stu[i]->rank[j];
-                best = j;
-            }
-        }
-        stu[i]->best = best;
+        stu[i]->best = distance(stu[i]->rank.begin(), 
+                min_element(stu[i]->rank.begin(), stu[i]->rank.end()));
     }
 
-    const vector<char> chs = { 'A', 'C', 'M', 'E' };
+    const string chs("ACME");
     int id, best;
     for (int i = 0; i < M; ++i) {
         cin >> id;
@@ -66,7 +60,7 @@ void slove()
         }
     }
 
-    for (int i = 0; i < stu.size(); ++i) {
+    for (size_t i = 0; i < stu.size(); ++i) {
         delete stu[i];
     }
     stu.clear();
