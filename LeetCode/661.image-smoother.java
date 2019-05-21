@@ -44,33 +44,31 @@
 class Solution {
     public int[][] imageSmoother(int[][] M) {
         if (M == null) return null;
-        int rLen   = M.length;
-        int cLen   = M[0].length;
-        int[][] R = new int[rLen][cLen];
+        int rLen  = M.length;
+        int cLen  = M[0].length;
         for (int i = 0; i < rLen; ++i) {
             for (int j = 0; j < cLen; ++j) {
-                R[i][j] = helper(M, i, j);
-            }
-        }
-        return R;
-    }
-
-    private int helper(int[][] M, int r, int c) {
-        int cr, cc;
-        int rLen   = M.length;
-        int cLen   = M[0].length;
-        int result = 0;
-        int count  = 0;
-        for (int i = -1; i <= 1; ++i) {
-            for (int j = -1; j <= 1; ++j) {
-                cr = r + i;
-                cc = c + j;
-                if (cr >= 0 && cr < rLen && cc >= 0 && cc < cLen) {
-                    result += M[cr][cc];
-                    ++count;
+                int result = 0;
+                int count = 0;
+                int cr, cc;
+                for (int r = -1; r <= 1; ++r) {
+                    for (int c = -1; c <= 1; ++c) {
+                        cr = i + r;
+                        cc = j + c;
+                        if (cr >= 0 && cr < rLen && cc >= 0 && cc < cLen) {
+                            result += M[cr][cc] & 0xff;
+                            ++count;
+                        }
+                    }
                 }
+                M[i][j] = ((result / count)<<8) | M[i][j];
             }
         }
-        return result / count;
+        for (int i = 0; i < rLen; ++i) {
+            for (int j = 0;j < cLen; ++j) {
+                M[i][j] >>= 8;
+            }
+        }
+        return M;
     }
 }
