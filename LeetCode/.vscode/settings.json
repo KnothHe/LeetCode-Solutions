@@ -7,4 +7,7 @@
         "**/.factorypath": true
     },
     "java.autobuild.enabled": false,
+    "vsintellicode.java.completionsEnabled": false,
+    "java.completion.enabled": false,
+    "java.errors.incompleteClasspath.severity": "ignore",
 }
