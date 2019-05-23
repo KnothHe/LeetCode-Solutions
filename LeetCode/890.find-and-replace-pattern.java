@@ -49,33 +49,36 @@
  * 1 <= pattern.length = words[i].length <= 20
  * 
  * 
+ * reference: https://leetcode.com/playground/9TL6xVWm/shared
  * 
  */
 class Solution {
     public List<String> findAndReplacePattern(String[] words, String pattern) {
         List<String> res = new ArrayList<>();
-        int len = pattern.length();
-        Boolean hasReplaced[] = new Boolean[26];
 
         for (String word : words) {
-            int i;
-            String str = new String(word);
-            Arrays.fill(hasReplaced,Boolean.FALSE);
-            for (i = 0; i < len; i++) {
-                if (hasReplaced[pattern.charAt(i)-'a'] == Boolean.FALSE) {
-                    str = str.replace(word.charAt(i), 
-                            Character.toUpperCase(pattern.charAt(i)));
-                    hasReplaced[pattern.charAt(i)-'a'] = Boolean.TRUE;
-                }
-                if (Character.toLowerCase(str.charAt(i)) != pattern.charAt(i)) {
-                    break;
-                }
-            }
-            if (i == len) {
+            if (match(word, pattern)) {
                 res.add(word);
             }
         }
 
         return res;
+    }
+
+    private boolean match(String word, String pattern) {
+        Map<Character, Character> m1 = new HashMap();
+        Map<Character, Character> m2 = new HashMap();
+
+        for (int i = 0; i < word.length(); i++) {
+            char w = word.charAt(i);
+            char p = pattern.charAt(i);
+            if (!m1.containsKey(w)) m1.put(w, p);
+            if (!m2.containsKey(p)) m2.put(p, w);
+            if (m1.get(w) != p || m2.get(p) != w) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
