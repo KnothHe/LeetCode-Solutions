@@ -79,32 +79,21 @@
  * 
  * 
  * 
- * 
+ * reference: https://leetcode.com/problems/groups-of-special-equivalent-strings/solution/
  * 
  */
 class Solution {
-    Set<String> set;
+    private Set<String> set;
     public int numSpecialEquivGroups(String[] A) {
         set = new HashSet();
         for (String s : A)  {
-            set.add(reorganize(s));
+            int[] count = new int[52];
+            for (int i = 0; i < s.length(); i++) {
+                count[s.charAt(i) - 'a' + (i % 2) * 26]++;
+            }
+            set.add(Arrays.toString(count));
         }
 
         return set.size();
-    }
-
-    private String reorganize(String s) {
-        char[] sEvenChars = new char[s.length()/2+1];
-        char[] sOddChars = new char[s.length()/2+1];
-        for (int i = 0; i < s.length(); i++) {
-            if (i % 2 == 0) {
-                sEvenChars[i/2] = s.charAt(i);
-            } else {
-                sOddChars[i/2+1] = s.charAt(i);
-            }
-        }
-        Arrays.sort(sEvenChars);
-        Arrays.sort(sOddChars);
-        return new String(sEvenChars) + new String(sOddChars);
     }
 }
