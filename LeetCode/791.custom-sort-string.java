@@ -44,36 +44,29 @@
  * S and T consist of lowercase letters only.
  * 
  * 
+ * reference: https://leetcode.com/problems/custom-sort-string/discuss/116615/Java-5-ms-10-line-counting-solution-with-comment
+ * 
  */
 class Solution {
     public String customSortString(String S, String T) {
-        Set<Character> setS = new HashSet();
-        Set<Character> setT = new HashSet();
         int[] count = new int[26];
 
-        for (char c : S.toCharArray()) {
-            setS.add(c);
-        }
         for (char c : T.toCharArray()) {
-            setT.add(c);
-            count[c-'a']++;
+            ++count[c-'a'];
         }
 
         StringBuilder sb = new StringBuilder();
         for (char c : S.toCharArray()) {
-            if (setT.contains(c)) {
-                for (int i = 0; i < count[c-'a']; ++i) {
-                    sb.append(c);
-                }
-                count[c-'a'] = 0;
+            while (count[c-'a'] != 0) {
+                sb.append(c);
+                --count[c-'a'];
             }
         }
-        for (char c : T.toCharArray()) {
-            if (!setS.contains(c)) {
-                for (int i = 0; i < count[c-'a']; ++i) {
-                    sb.append(c);
-                }
-                count[c-'a'] = 0;
+        
+        for (char c = 'a'; c <= 'z'; ++c) {
+            while (count[c-'a'] != 0) {
+                sb.append(c);
+                --count[c-'a'];
             }
         }
         
