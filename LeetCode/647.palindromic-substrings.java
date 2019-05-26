@@ -44,32 +44,29 @@
  * 
  * 
  * 
+ * reference: 
+ * https://leetcode.com/problems/palindromic-substrings/discuss/105689/Java-solution-8-lines-extendPalindrome
  * 
  */
 class Solution {
-    public int countSubstrings(String s) {
-        int count = 0;
+    private int count = 0;
 
-        for (int block = s.length(); block > 0; --block) {
-            for (int i = 0; i <= s.length()-block; ++i) {
-                if (isPalindromic(s.substring(i, i+block))) {
-                    ++count;
-                }
-            }
+    public int countSubstrings(String s) {
+
+        for (int i = 0; i < s.length(); ++i) {
+            extendPalindrome(s, i, i);
+            extendPalindrome(s, i, i+1);
         }
 
         return count;
     }
 
-    private boolean isPalindromic(String s) {
-        int lo = 0, hi = s.length()-1;
-        while (lo < hi) {
-            if (s.charAt(lo) != s.charAt(hi)) {
-                return false;
-            }
-            ++lo;
-            --hi;
+    private void extendPalindrome(String s, int left, int right) {
+        while (left >= 0 && right < s.length() && 
+                s.charAt(left) == s.charAt(right)) {
+            ++count;
+            --left;
+            ++right;
         }
-        return true;
     }
 }
