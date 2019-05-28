@@ -71,24 +71,19 @@
  */
 class Solution {
     public int scoreOfParentheses(String S) {
-        return helper(S, 0, S.length());
-    }
+        Stack<Integer> stack = new Stack<>();
+        stack.push(0);
 
-    private int helper(String S, int beg, int end) {
-        int ans = 0;
-        int bal = 0;
-
-        for (int i = beg; i < end; ++i) {
-            bal += S.charAt(i) == '(' ? 1 : -1;
-            if (bal == 0) {
-                if (i - beg == 1) {
-                    ++ans;
-                } else {
-                    ans += 2 * helper(S, beg+1, i);
-                }
-                beg = i+1;
+        for (char c : S.toCharArray()) {
+            if (c == '(') {
+                stack.push(0);
+            } else {
+                int v = stack.pop();
+                int w = stack.pop();
+                stack.push(w + Math.max(2*v, 1));
             }
         }
-        return ans;
+
+        return stack.pop();
     }
 }
