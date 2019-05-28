@@ -66,24 +66,25 @@
  * 
  * 
  * reference:
- * https://leetcode.com/problems/score-of-parentheses/solution/
+ * https://leetcode.com/problems/score-of-parentheses/discuss/141777/C%2B%2BJavaPython-O(1)-Space
  * 
  */
 class Solution {
     public int scoreOfParentheses(String S) {
-        Stack<Integer> stack = new Stack<>();
-        stack.push(0);
+        int level = 0;
+        int ans = 0;
 
-        for (char c : S.toCharArray()) {
-            if (c == '(') {
-                stack.push(0);
+        for (int i = 0; i < S.length(); ++i) {
+            if (S.charAt(i) == '(') {
+                ++level;
             } else {
-                int v = stack.pop();
-                int w = stack.pop();
-                stack.push(w + Math.max(2*v, 1));
+                --level;
+            }
+            if (S.charAt(i) == ')' && S.charAt(i-1) == '(') {
+                ans += 1 << level;
             }
         }
 
-        return stack.pop();
+        return ans;
     }
 }
