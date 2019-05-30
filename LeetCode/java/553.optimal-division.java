@@ -58,18 +58,12 @@ class Solution {
                 .toString();
         }
 
-        for (int i = 0; i < nums.length; ++i) {
-            if (i != 0) {
-                sb.append('/');
-            }
-            if (i == 1) {
-                sb.append('(');
-            }
-            sb.append(nums[i]);
-            if (i == nums.length - 1) {
-                sb.append(')');
-            }
+        sb.append(nums[0]).append("/(").append(nums[1]);
+
+        for (int i = 2; i < nums.length; ++i) {
+            sb.append('/').append(nums[i]);
         }
+        sb.append(')');
 
         return sb.toString();
     }
