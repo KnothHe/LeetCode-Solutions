@@ -37,11 +37,49 @@
  * 
  * N  will be in range [1, 10000].
  * 
+ * reference :
+ * https://leetcode.com/problems/rotated-digits/discuss/117975/Java-dp-solution-9ms
  * 
  */
 class Solution {
     public int rotatedDigits(int N) {
-        return solve1(N);
+        int count = 0;
+        int[] dp = new int[N + 1];
+
+        for (int i = 0; i <= N; i++) {
+            if (i < 10) {
+                switch (i) {
+                    case 0 :
+                    case 1 :
+                    case 8 :
+                        dp[i] = 1;
+                        break;
+                    case 2 :
+                    case 5 :
+                    case 6 :
+                    case 9 :
+                        dp[i] = 2;
+                        count++;
+                        break;
+                    default :
+                        dp[i] = 0;
+                        break;
+                }
+            } else {
+                int a = dp[ i / 10 ];
+                int b = dp[ i % 10 ];
+                if (a == 1 && b == 1) {
+                    dp[i] = 1;
+                } else if (a >= 1 && b >= 1) {
+                    dp[i] = 2;
+                    count++;
+                } else {
+                    dp[i] = 0;
+                }
+            }
+        }
+
+        return count;
     }
 
     private int solve1(int N) {
