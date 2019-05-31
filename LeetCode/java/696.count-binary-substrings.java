@@ -43,10 +43,31 @@
  * Note:
  * s.length will be between 1 and 50,000.
  * s will only consist of "0" or "1" characters.
+ *
  * 
  */
 class Solution {
     public int countBinarySubstrings(String s) {
+        int len = s.length();
+        int prev = 0;
+        int cur = 1;
+        int count = 0;
+
+        for (int i = 1; i < len; i++) {
+            if (s.charAt(i) != s.charAt(i-1)) {
+                count += Math.min(cur, prev);
+                prev = cur;
+                cur = 1;
+            } else {
+                cur++;
+            }
+        }
+        count += Math.min(cur, prev);
+
+        return count;
+    }
+
+    private int solve2(String s) {
         int len = s.length();
         int cur_count = 1;
         ArrayList<Integer> group = new ArrayList<>();
