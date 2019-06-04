@@ -64,7 +64,8 @@ class Solution {
                 sb.append(temp_result % 10);
             }
             sb.append(carry);
-            nums.add(sb.reverse().toString());
+            // reverse number represent
+            nums.add(sb.toString());
         }
 
         String result = "0";
@@ -72,34 +73,36 @@ class Solution {
             result = add(result, n);
         }
 
-        int i = 0;
-        while (i < result.length()) {
+        int i = result.length()-1;
+        while (i >= 0) {
             if (result.charAt(i) != '0') {
                 break;
             }
-            i++;
+            i--;
         }
 
-        return result.substring(i);
+        return new StringBuilder(result.substring(0, i+1))
+            .reverse().toString();
     }
 
+    // add reverse number represent and return reverse number represent
     private String add(String a, String b) {
         int carry = 0;
-        int i = a.length()-1;
-        int j = b.length()-1;
+        int i = 0;
+        int j = 0;
         StringBuilder sb = new StringBuilder();
 
-        while (i >= 0 || j >= 0) {
-            int n1 = i >= 0 ? a.charAt(i)-'0' : 0;
-            int n2 = j >= 0 ? b.charAt(j)-'0' : 0;
+        while (i < a.length() || j < b.length()) {
+            int n1 = i < a.length() ? a.charAt(i)-'0' : 0;
+            int n2 = j < b.length() ? b.charAt(j)-'0' : 0;
             int temp_result = n1 + n2 + carry;
             carry = temp_result / 10;
             sb.append(temp_result % 10);
-            i--;
-            j--;
+            i++;
+            j++;
         }
         sb.append(carry);
 
-        return sb.reverse().toString();
+        return sb.toString();
     }
 }
