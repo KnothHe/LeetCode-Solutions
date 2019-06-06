@@ -50,6 +50,69 @@
 class Solution {
     public boolean isNumber(String s) {
         if (s == null || s.isEmpty()) return false;
+
+        int index = 0;
+        int len = s.length();
+        boolean hasNumberBeforeDot = false;
+    
+        // skip whitespace
+        for (; index < len && s.charAt(index) == ' '; index++) {  }
+
+        if (index < len && 
+                (s.charAt(index) == '+' || 
+                s.charAt(index) == '-')) {
+            index++;
+        }
+
+        // return false is just has space or '+'/'-';
+        if (index == len) return false;
+
+        if (Character.isDigit(s.charAt(index))) {
+            hasNumberBeforeDot = true;
+            while (index < len && Character.isDigit(s.charAt(index))) {
+                index++;
+            }
+        } else if (s.charAt(index) != '.'){
+            return false;
+        }
+
+        if (index < len && s.charAt(index) == '.') {
+            index++;
+            if (!hasNumberBeforeDot && 
+                    (index == len || !Character.isDigit(s.charAt(index)))) {
+                return false;
+            }
+            while (index < len && Character.isDigit(s.charAt(index))) {
+                index++;
+            }
+        }
+
+        if (index < len && s.charAt(index) == 'e') {
+            index++;
+            if (index < len && (s.charAt(index) == '+' ||
+                    s.charAt(index) == '-')) {
+                index++;
+            }
+            if (index == len || !Character.isDigit(s.charAt(index))) {
+                return false;
+            }
+            while (index < len && Character.isDigit(s.charAt(index))) {
+                index++;
+            }
+        }
+        
+        // skip trail whitespace
+        for (; index < len && s.charAt(index) == ' '; index++) {  }
+
+        if (index < len) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean isNumber_orig(String s) {
+        if (s == null || s.isEmpty()) return false;
         s = s.trim();
 
         int len = s.length();
