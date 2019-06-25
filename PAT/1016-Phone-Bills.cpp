@@ -1,123 +1,78 @@
+/*
+ * references:
+ *  https://oliverlew.github.io/PAT/Advanced/1016.html
+ *  https://www.liuchuo.net/archives/2350
+ */
 #include <iostream>
-#include <sstream>
 #include <vector>
-#include <string>
+#include <algorithm>
 #include <map>
-#include <utility> // pair
-#include <numeric> // accumulate
-#include <algorithm> // sort
+#include <string>
 #include <cstdio>
 
 using namespace std;
-vector<int> rates(24);
-int one_day_rate;
 
-vector<int> split_to_ints(string s)
-{
-    vector<int> ints;
-    string delimiter = ":";
-    size_t pos = 0;
-    string token;
-    while ((pos = s.find(delimiter)) != string::npos) {
-        token = s.substr(0, pos);
-        ints.push_back(stoi(token));
-        s.erase(0, pos + delimiter.size());
+class Record {
+public:
+    string  name;
+    int month, day, hour, minute, time, state;
+     
+    double billFromZero(vector<int> &tolls) {
+        long total = tolls[hour] * minute + tolls[24] * 60 * day;
+        for (int i = 0; i < hour; i++) {
+            total += tolls[i] * 60;
+        }
+        return total / 100.0;
     }
-    ints.push_back(stoi(s));
-    return ints;
-}
+};
 
-pair<int, double> count_bill(string t1, string t2) 
-{
-    vector<int> v1 = split_to_ints(t1);
-    vector<int> v2 = split_to_ints(t2);
-    long bill = 0;
-    int time = 0;
-    int d1 = v1[1], d2 = v2[1], h1 = v1[2], h2 = v2[2], m1 = v1[3], m2 = v2[3];
-    if (d1 == d2) {
-        if (h2 == h1) {
-            bill += (m2 - m1) * rates[h1];
-            time += m2 - m1;
-        } else {
-            bill += (60 - m1) * rates[h1];
-            bill += m2 * rates[h2];
-            time += 60 - m1;
-            time += m2;
-            for (int h = h1 + 1; h < h2; h++) {
-                bill += 60 * rates[h];
-                time += 60;
-            }
-        }
-    } else {
-        bill += (60 - m1) * rates[h1];
-        bill += m2 * rates[h2];
-        time += 60 - m1;
-        time += m2;
-        for (int h = h1 + 1; h < 24; h++) {
-            bill += 60 * rates[h];
-            time += 60;
-        }
-        for (int h = 0; h < h2; h++) {
-            bill += 60 * rates[h];
-            time += 60;
-        }
-        for (int d = d1 + 1; d < d2; d++) {
-            bill += 60 * one_day_rate;
-            time += 60 * 24;
-        }
-    }
-    return { time, bill / 100.0 };
+bool cmp(const Record &lhs, const Record &rhs) {
+    return lhs.name != rhs.name ? lhs.name < rhs.name : lhs.time < rhs.time;
 }
 
 int main()
 {
-    int N; 
+    string state;
+    vector<int> tolls(25, 0);
+    int N;
     for (int i = 0; i < 24; i++) {
-        int rate;
-        cin >> rate;
-        rates[i] = rate;
+        cin >> tolls[i];
+        tolls[24] += tolls[i];
     }
-    one_day_rate = accumulate(rates.begin(), rates.end(), 0);
     cin >> N;
-    // name, time, status(true : on-line, false : off-line)
-    map<string, vector<pair<string, bool>>> res_map;
-    string time;
+    vector<Record> records(N);
     for (int i = 0; i < N; i++) {
-        string name, status;
-        cin >> name >> time >> status;
-        res_map[name].push_back(make_pair(time, 
-                    (status == "on-line" ? true : false)));
+        Record &r = records[i];
+        cin >> r.name;
+        scanf("%d:%d:%d:%d", &r.month, &r.day, &r.hour, &r.minute);
+        cin >> state;
+        r.state = (state == "on-line" ? 1 : 0);
+        r.time = r.day * 24 * 60 + r.hour * 60 + r.minute;
     }
-    string month = time.substr(0, 2);
-    for (auto &iter : res_map) {
-        sort(iter.second.begin(), iter.second.end(), 
-                [](auto &left, auto &right) { 
-                return left.first < right.first; 
-                });
-        double total_bill = 0;
-        bool need_print = false;
-        for (auto it = iter.second.begin(); it < iter.second.end(); it++) {
-            if (it->second && it + 1 < iter.second.end() && !(it + 1)->second) {
-                need_print = true;
-                break;
-            }
+    sort(records.begin(), records.end(), cmp);
+    map<string, vector<Record>> items;
+    for (int i = 1; i < N; i++) {
+        if (records[i - 1].name == records[i].name &&
+                records[i - 1].state == 1 && 
+                records[i].state == 0) {
+            string name = records[i].name;
+            items[name].push_back(records[i - 1]);
+            items[name].push_back(records[i]);
         }
-        if (need_print) {
-            cout << iter.first << " " << month << "\n";
-            for (auto it = iter.second.begin(); it < iter.second.end(); ) {
-                if (it->second && it + 1 < iter.second.end() && !(it + 1)->second) {
-                    auto p = count_bill(it->first, (it + 1)->first);
-                    cout << it->first.substr(3, it->first.size()) << " ";
-                    it++;
-                    cout << it->first.substr(3, it->first.size()) << " ";
-                    printf("%d $%.2lf\n", p.first, p.second);
-                    total_bill += p.second;
-                }
-                it++;
-            }
-            printf("Total amount: $%.2lf\n", total_bill);
+    }
+    for (auto &it : items) {
+        vector<Record> &r = it.second;
+        cout << it.first;
+        printf(" %02d\n", r[0].month);
+        double total = 0.0;
+        for (int i = 1; i < r.size(); i += 2) {
+            double t = r[i].billFromZero(tolls) - r[i - 1].billFromZero(tolls);
+            printf("%02d:%02d:%02d %02d:%02d:%02d %d $%.2lf\n",
+                    r[i - 1].day, r[i - 1].hour, r[i - 1].minute, 
+                    r[i].day, r[i].hour, r[i].minute, r[i].time - r[i - 1].time, t);
+            total += t;
         }
+        printf("Total amount: $%.2lf\n", total);
     }
     return 0;
 }
-
