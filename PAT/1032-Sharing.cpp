@@ -1,4 +1,7 @@
-#include <iostream>
+/*
+ * Reference:
+ *  https://www.liuchuo.net/archives/2113
+ */
 #include <vector>
 #include <cstdio>
 using namespace std;
@@ -9,24 +12,22 @@ struct Node {
 };
 vector<Node> nodes(MAX_N);
 int main() {
-    int a1, a2, n;
-    cin >> a1 >> a2 >> n;
+    int a1, a2, n, add, next;
+    char data;
+    scanf("%d %d %d", &a1, &a2, &n);
     for (int i = 0; i < n; i++) {
-        int add, next;
-        char data;
-        cin >> add >> data >> next;
+        scanf("%d %c %d", &add, &data, &next);
         nodes[add].next = next;
     }
     for (int i = a1; i != -1; i = nodes[i].next) {
         nodes[i].flag = true;
     }
-    int res = -1;
     for (int i = a2; i != -1; i = nodes[i].next) {
         if (nodes[i].flag) {
-            res = i; break;
+            printf("%05d", i);
+            return 0;
         }
     }
-    if (res == -1) printf("-1");
-    else printf("%05d", res);
+    printf("-1");
     return 0;
 }
