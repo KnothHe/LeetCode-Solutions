@@ -34,24 +34,30 @@
  *     ListNode next;
  *     ListNode(int x) { val = x; }
  * }
+ *
+ * Refernece:
+ *  https://leetcode.com/problems/merge-k-sorted-lists/discuss/10528/A-java-solution-based-on-Priority-Queue
+ *
  */
 class Solution {
     public ListNode mergeKLists(ListNode[] lists) {
         if (lists == null || lists.length == 0) return null;
-        ListNode node = new ListNode(0);
-        ListNode head = node;
-        int min = 0;
-        while (true) {
-            for (int i = 0; i < lists.length; i++) {
-                if (lists[i] != null && 
-                        (lists[min] == null || lists[i].val < lists[min].val)) {
-                    min = i;
-                }
-            }
-            if (lists[min] == null) break;
-            node.next = new ListNode(lists[min].val);
+        PriorityQueue<ListNode> pq = new PriorityQueue<>(lists.length,
+                new Comparator<ListNode>() {
+                    @Override
+                    public int compare(ListNode lhs, ListNode rhs) {
+                        return lhs.val - rhs.val;
+                    }
+                });
+        ListNode head = new ListNode(0);
+        ListNode node = head;
+        for (ListNode ld : lists) {
+            if (ld != null) pq.add(ld);
+        }
+        while (!pq.isEmpty()) {
+            node.next = pq.poll();
             node = node.next;
-            lists[min] = lists[min].next;
+            if (node.next != null) pq.add(node.next);
         }
         return head.next;
     }
