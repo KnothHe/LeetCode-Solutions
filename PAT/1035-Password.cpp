@@ -9,24 +9,22 @@ unordered_map<char, char> replace({
         {'l', 'L'},
         {'O', 'o'}
         });
-struct Account {
-    string name, passwd;
-} account;
-vector<Account> ans;
+vector<string> ans;
 int main() {
     int n;
     cin >> n;
     for (int i = 0; i < n; i++) {
-        cin >> account.name >> account.passwd;
+        string name, passwd;
+        cin >> name >> passwd;
         bool modified = false;
-        for (auto &c : account.passwd) {
+        for (auto &c : passwd) {
             if (replace.find(c) != replace.end()) {
                 modified = true;
                 c = replace[c];
             }
         }
         if (modified) {
-            ans.push_back(account);
+            ans.push_back(name + " " + passwd);
         }
     }
     if (ans.size() == 0) {
@@ -37,8 +35,8 @@ int main() {
         }
     } else {
         cout << ans.size() << endl;
-        for (auto ac : ans) {
-            cout << ac.name << " " << ac.passwd << endl;
+        for (auto s : ans) {
+            cout << s << endl;
         }
     }
     return 0;
