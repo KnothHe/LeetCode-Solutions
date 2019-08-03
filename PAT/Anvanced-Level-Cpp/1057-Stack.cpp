@@ -2,62 +2,72 @@
  * Reference:
  *  https://www.liuchuo.net/archives/2265
  *
- * Use Bit Index Tree
+ * Binary Indexed Tree
  *
- * Still can't understand BIT.
+ * Suppose there is an array A, A[i] is the number of times i appears in the stack st.
+ *
+ * Binary Indexed Tree Array c is an array can quickly get the sum of number less than
+ * or equal to i.
+ *
+ * Generally, BIT array can efficiently update elements and calculate prefix sums in
+ * a table of numbers. [from wikipedia]
+ *
+ * Since we can get less than or equal to the number of a number in the stack st, we
+ * can use binary seach to find the median.
+ *
+ * Meanwhile, change the number of occurrences of a number is logarithmic time.
+ *
  */
-#include <iostream>
-#include <stack>
-#include <vector>
+#include <iostream> 
 #include <string>
+#include <vector>
+#include <stack>
 using namespace std;
-const int max_n = 100010;
-vector<int> c(max_n);
-stack<int> s;
-int lowbit(int x) { return x & (-x); }
-void update(int x, int v) {
-    for (int i = x; i < max_n; i += lowbit(i)) c[i] += v;
+const int max_n = 100005;
+vector<int> bit(max_n, 0);
+stack<int> st;
+inline int lowbit(int x) { return x & (-x); }
+void edit(int x, int delta) {
+    for (int i = x; i < max_n; i += lowbit(i)) { bit[i] += delta; }
 }
-int getsum(int x) {
+int get_sum(int x) {
     int sum = 0;
-    for (int i = x; i >= 1; i -= lowbit(i)) { sum += c[i]; }
+    for (int i = x; i >= 1; i -= lowbit(i)) { sum += bit[i]; }
     return sum;
 }
-void PeekMedian() {
-    int left = 1, right = max_n, mid, k = (s.size() + 1) / 2;
+int peek_median() {
+    int left = 1, right = max_n, mid, k = (st.size() + 1) / 2;
     while (left < right) {
         mid = (left + right) / 2;
-        if (getsum(mid) >= k) { right = mid; }
-        else { left = mid + 1; }
+        if (get_sum(mid) >= k) right = mid;
+        else left = mid + 1;
     }
-    cout << left << endl;
+    return left;
 }
 int main() {
-    int n, temp;
-    string op;
+    int n, t;
     cin >> n;
+    string op;
     for (int i = 0; i < n; i++) {
         cin >> op;
-        switch(op[1]) {
+        switch (op[1]) {
             case 'u' :
-                cin >> temp;
-                s.push(temp);
-                update(temp, 1);
+                cin >> t;
+                st.push(t);
+                edit(t, 1);
                 break;
             case 'o' :
-                if (s.empty()) {
-                    cout << "Invalid\n";
-                } else {
-                    update(s.top(), -1);
-                    cout << s.top() << "\n";
-                    s.pop();
+                if (st.empty()) cout << "Invalid\n";
+                else {
+                    edit(st.top(), -1);
+                    cout << st.top() << "\n";
+                    st.pop();
                 }
                 break;
             default :
-                if (s.empty()) {
-                    cout << "Invalid\n";
-                } else {
-                    PeekMedian();
+                if (st.empty()) cout << "Invalid\n";
+                else {
+                    cout << peek_median() << "\n";
                 }
         }
     }

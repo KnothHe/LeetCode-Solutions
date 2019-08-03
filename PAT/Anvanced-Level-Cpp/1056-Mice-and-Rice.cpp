@@ -8,9 +8,9 @@ struct Mouse {
 int main() {
     int np, ng, o;
     cin >> np >> ng;
-    vector<Mouse> misc(np);
+    vector<Mouse> mice(np);
     queue<int> que;
-    for (int i = 0; i < np; i++) cin >> misc[i].weight;
+    for (int i = 0; i < np; i++) cin >> mice[i].weight;
     for (int i = 0; i < np; i++) {
         cin >> o;
         que.push(o);
@@ -23,9 +23,9 @@ int main() {
             int temp = que.front();
             que.pop();
             cnt++;
-            misc[temp].rank = group + 1;
-            if (misc[temp].weight > max_val) {
-                max_val = misc[temp].weight;
+            mice[temp].rank = group + 1;
+            if (mice[temp].weight > max_val) {
+                max_val = mice[temp].weight;
                 max_ele = temp;
             }
             if (cnt == ng || i == len - 1) {
@@ -35,10 +35,10 @@ int main() {
             }
         }
     }
-    misc[que.front()].rank = 1;
-    cout << misc[0].rank;
-    for (int i = 1; i < misc.size(); i++) {
-        cout << " " << misc[i].rank;
+    mice[que.front()].rank = 1;
+    cout << mice[0].rank;
+    for (int i = 1; i < mice.size(); i++) {
+        cout << " " << mice[i].rank;
     }
     return 0;
 }
