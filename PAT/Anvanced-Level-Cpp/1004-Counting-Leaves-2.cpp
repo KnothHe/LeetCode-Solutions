@@ -1,25 +1,15 @@
 /*
- * dfs
+ * bfs
  *
  */
 #include <iostream>
 #include <vector>
+#include <queue>
 using namespace std;
 const int maxn = 105;
 vector<vector<int>> tree(maxn);
 vector<int> cnts(maxn, 0);
 int max_dep = -1;
-void dfs(int cur, int depth) {
-    if (tree[cur].empty()) {
-        cnts[depth]++;
-        if (depth > max_dep) {
-            max_dep = depth;
-        }
-    }
-    for (int next : tree[cur]) {
-        dfs(next, depth + 1);
-    }
-}
 int main() {
     int n, m;
     cin >> n >> m;
@@ -31,7 +21,17 @@ int main() {
             tree[id].push_back(t);
         }
     }
-    dfs(1, 1);
+    queue<vector<int>> que;
+    que.push({1, 1});
+    while (!que.empty()) {
+        auto cur = que.front();
+        que.pop();
+        for (auto next : tree[cur[0]]) {
+            que.push({next, cur[1] + 1});
+        }
+        if (tree[cur[0]].empty()) cnts[cur[1]]++;
+        max_dep = cur[1];
+    }
     for (int i = 1; i <= max_dep; i++) {
         if (i != 1) { cout << " "; }
         cout << cnts[i];
