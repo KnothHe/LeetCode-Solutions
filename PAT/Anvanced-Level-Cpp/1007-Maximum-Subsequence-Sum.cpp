@@ -1,75 +1,27 @@
-#include <algorithm>
 #include <iostream>
-#include <limits>
 #include <vector>
-
 using namespace std;
-
-vector<int> nums;
-
-void slove()
-{
-    vector<int> fis(nums.size());
-    vector<int> sums(nums.size());
-    fis[0] = 0;
-    sums[0] = nums[0];
-
-    for (int i = 1; i < nums.size(); ++i) {
-        if (sums[i-1] >= 0) {
-            sums[i] = sums[i-1] + nums[i];
-            fis[i] = fis[i-1];
-        } else {
-            sums[i] = nums[i];
-            fis[i] = i;
-        }
-    }
-
-    int maxIdx = distance(sums.begin(), max_element(sums.begin(), sums.end()));
-    if (sums[maxIdx] >= 0) {
-        cout << sums[maxIdx] << " " << nums[fis[maxIdx]] << " " << nums[maxIdx] << endl;
-    } else {
-        cout << 0 << " " << nums.front() << " " << nums.back() << endl;
-    }
-}
-
-void slove2()
-{
-    int maxSum = numeric_limits<int>::min();
-    int sum = 0;
-    int fi = 0;
-    int rfi = 0, rla = 0;
-
-    for (int i = 0; i < nums.size(); ++i) {
+int main() {
+    int n;
+    cin >> n;
+    vector<int> ns(n);
+    for (int i = 0; i < n; i++) { cin >> ns[i]; }
+    int max_sum = -1, max_first = 0, max_last = 0, sum = -1, first;
+    for (int i = 0; i < n; i++) {
         if (sum >= 0) {
-            sum += nums[i];
+            sum += ns[i];
         } else {
-            sum = nums[i];
-            fi = i;
+            sum = ns[i];
+            first = ns[i];
         }
-        if (sum > maxSum) {
-            maxSum = sum;
-            rfi = fi;
-            rla = i;
+        if (sum > max_sum) {
+            max_sum = sum;
+            max_first = first;
+            max_last = ns[i];
         }
     }
-
-    if (maxSum >= 0) {
-        cout << maxSum << " " << nums[rfi] << " " << nums[rla] << endl;
-    } else {
-        cout << 0 << " " << nums.front() << " " << nums.back() << endl;
-    }
-}
-
-int main()
-{
-    int K, n;
-    cin >> K;
-    for (int i = 0; i < K; ++i) {
-        cin >> n;
-        nums.push_back(n);
-    }
-
-    slove2();
-
+    if (max_sum < 0) { max_sum = 0; max_first = ns.front(); max_last = ns.back(); }
+    cout << max_sum << " " << max_first << " " << max_last << "\n";
     return 0;
 }
+
