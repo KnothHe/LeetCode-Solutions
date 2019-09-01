@@ -1,38 +1,19 @@
 #include <iostream>
-#include <vector>
-
 using namespace std;
-
-vector<int> input;
-
-void slove()
-{
-    int c = 0; 
-    int sum = 0;
-    for (const auto &i : input) {
-        int o = i - c;
-        if (o > 0) {
-            sum += o*6;
+int main() {
+    int cnt = 0, cur = 0, n, t;
+    cin >> n;
+    for (int i = 0; i < n; i++) {
+        cin >> t;
+        if (t > cur) {
+            cnt += (t - cur) * 6;
         } else {
-            sum += (-o)*4;
+            cnt += (cur - t) * 4;
         }
-        c = i;
+        cnt += 5;
+        cur = t;
     }
-    sum += input.size() * 5;
-
-    cout << sum << endl;
-}
-
-int main()
-{
-    int N, n;
-    cin >> N;
-    for (int i = 0; i < N; ++i) {
-        cin >> n;
-        input.push_back(n);
-    }
-
-    slove();
-
+    cout << cnt << "\n";
     return 0;
 }
+

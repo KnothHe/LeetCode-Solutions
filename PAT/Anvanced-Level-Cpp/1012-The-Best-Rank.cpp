@@ -1,81 +1,59 @@
 #include <algorithm>
 #include <iostream>
-#include <unordered_map>
 #include <vector>
-
+#include <map>
 using namespace std;
-
-class Node {
-public:
-    int best, id;
-    vector<int> score, rank;
-
-    Node (int i, int c, int m, int e) :
-        id(i), score( { static_cast<int>((c+m+e)/3.0), c, m, e } ), rank(4) {  }
+struct Stud {
+    vector<int> gs;
+    int best_idx, best_rank = 1 << 7;
+    string id;
+    Stud(string id, int c, int m, int e) :
+        id(id), gs{ static_cast<int>((c + m + e) / 3.0 + 0.5), c, m, e} {  };
 };
-
-class Cmp {
-private:
-    int flag;
-
-public:
-    Cmp(int f) : flag(f) {  }
-    bool operator()(Node *n1, Node *n2) {
-        return n1->score[flag] > n2->score[flag];
+void give_rank(vector<Stud> &studs, int r) {
+    sort(studs.begin(), studs.end(), [r](auto &lhs, auto &rhs) {
+            return lhs.gs[r] > rhs.gs[r];
+            });
+    int rank = 1;
+    if (studs[0].best_rank > 1) {
+        studs[0].best_rank = 1;
+        studs[0].best_idx = r;
     }
-};
-
-int N, M;
-vector<Node*> stu;
-unordered_map<int, int> exist;
-
-void slove()
-{
-    for (int flag = 0; flag <= 3; ++flag) {
-        sort(stu.begin(), stu.end(), Cmp(flag));
-        stu[0]->rank[flag] = 1;
-        for (size_t i = 1; i < stu.size(); ++i) {
-            stu[i]->rank[flag] = i+1;
-            if (stu[i]->score[flag] == stu[i-1]->score[flag]) {
-                stu[i]->rank[flag] = stu[i-1]->rank[flag];
-            }
+    for (int i = 1; i < studs.size(); i++) {
+        if (studs[i].gs[r] != studs[i - 1].gs[r]) { rank = i + 1; }
+        if (rank < studs[i].best_rank) {
+            studs[i].best_rank = rank;
+            studs[i].best_idx = r;
         }
     }
-
-    for (size_t i = 0; i < stu.size(); ++i) {
-        exist[stu[i]->id] = i;
-        stu[i]->best = distance(stu[i]->rank.begin(), 
-                min_element(stu[i]->rank.begin(), stu[i]->rank.end()));
-    }
-
-    const string chs("ACME");
-    int id, best;
-    for (int i = 0; i < M; ++i) {
-        cin >> id;
-        if (exist.find(id) != exist.end()) {
-            best = stu[exist[id]]->best;
-            cout << stu[exist[id]]->rank[best] << " " << chs[best] << endl;
-        } else {
-            cout << "N/A" << endl;
-        }
-    }
-
-    for (size_t i = 0; i < stu.size(); ++i) {
-        delete stu[i];
-    }
-    stu.clear();
 }
-
-int main()
-{
-    cin >> N >> M;
-    int id, c, m, e;
-    for (int i = 0; i < N; ++i) {
-        cin >> id >> c >> m >> e;
-        stu.push_back(new Node(id, c, m, e));
+int main() {
+    string R = "ACME";
+    int n, m;
+    string id;
+    cin >> n >> m;
+    vector<Stud> studs;
+    for (int i = 0; i < n; i++) {
+        int tc, tm, te;
+        cin >> id >> tc >> tm >> te;
+        studs.push_back({id, tc, tm, te});
     }
-
-    slove();
-
+    for (int i = 0; i < 4; i++) {
+        give_rank(studs, i);
+    }
+    map<string, int> idxs;
+    for (int i = 0; i < n; i++) {
+        idxs[studs[i].id] = i;
+    }
+    for (int i = 0; i < m; i++) {
+        cin >> id;
+        if (idxs.find(id) != idxs.end()) {
+            cout << studs[idxs[id]].best_rank << " " << R[studs[idxs[id]].best_idx];
+        } else {
+            cout << "N/A";
+        }
+        cout << "\n";
+    }
     return 0;
 }
+

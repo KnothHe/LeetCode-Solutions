@@ -1,56 +1,35 @@
 #include <algorithm>
 #include <iostream>
-#include <cctype>
-#include <string>
-
 using namespace std;
-
-long long tag, R;
-string N1, N2;
-
-long long convert(string s, long long radix)
-{
-    long long res = 0, n;
-    for (const auto &c : s) {
-        n = isdigit(c) ? c-'0' : c-'a'+10;
-        res = res*radix + n;
+long long convert(string n, int r) {
+    long long rs = 0;
+    for (char ch : n) {
+        int c = isdigit(ch) ? ch - '0' : ch - 'a' + 10;
+        rs = rs * r + c;
     }
-    return res;
+    return rs;
 }
-
-long long find_radix(string n, long long num)
-{
+long long findRadix(string n, long long num) {
     char it = *max_element(n.begin(), n.end());
-    long long low = (isdigit(it) ? it-'0' : it-'a'+10)+1;
+    long long low = (isdigit(it) ? it - '0' : it - 'a' + 10) + 1;
     long long high = max(num, low);
     while (low <= high) {
-        long long mid = (low+high)/2;
+        long long mid = (low + high) / 2;
         long long t = convert(n, mid);
-        if (t < 0 || t > num) high = mid-1;
-        else if (t == num) return mid;
-        else low = mid+1;
+        if (t == num) { return mid; }
+        else if (t < 0 || t > num) high = mid - 1;
+        else low = mid + 1;
     }
     return -1;
 }
-
-void slove()
-{
-    if (tag == 2) {
-        swap(N1, N2);
-    }
-    long long res = find_radix(N2, convert(N1, R));
-    if (res == -1) {
-        cout << "Impossible" << endl;
-    } else {
-        cout << res << endl;
-    }
-}
-
-int main()
-{
-    cin >> N1 >> N2 >> tag >> R;
-    
-    slove();
-
+int main() {
+    string n1, n2;
+    int tag, radix;
+    cin >> n1 >> n2 >> tag >> radix;
+    if (tag == 2) { swap(n1, n2); }
+    int r = findRadix(n2, convert(n1, radix));
+    if (r == -1) { cout << "Impossible"; }
+    else { cout << r; }
     return 0;
 }
+
