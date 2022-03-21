@@ -58,22 +58,13 @@
 // @lc code=start
 class Solution {
     public int maxSubArray(int[] nums) {
-       int start = 0, end = 1, len = nums.length, max = nums[0], sum = nums[0];
-       while (end < len) {
-            int n = nums[end];
-            end++;
-
-            // start and end pointer
-            sum = Math.max(n, n+sum);
-            if (n == sum) {
-                start = end;
-            }
-            // max value
-            if (sum > max) {
-                max = sum;
-            }
-       }
-       return max;
+        int len = nums.length, max = nums[0], sum = nums[0];
+        for (int i = 1; i < len; i++) {
+            sum = nums[i] + (sum > 0 ? sum : 0);
+            // sum = Math.max(sum, nums[i]+sum);
+            max = Math.max(sum, max);
+        }
+        return max;
     }
 }
 // @lc code=end
