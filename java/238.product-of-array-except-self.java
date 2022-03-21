@@ -49,6 +49,32 @@
 // @lc code=start
 class Solution {
     public int[] productExceptSelf(int[] nums) {
+        return twoPass(nums);
+    }
+
+    public int[] twoPass(int[] nums) {
+        int len = nums.length;
+        int[] answer = new int[len];
+
+        // forward
+        answer[0] = nums[0];
+        int p = nums[0];
+        for (int i = 1; i < len; i++) {
+            answer[i] = p;
+            p *= nums[i];
+        }
+
+        // backward
+        p = 1;
+        for (int i = len-1; i > 0; i--) {
+            answer[i] = answer[i] * p;
+            p *= nums[i];
+        }
+        answer[0] = p;
+        return answer;
+    }
+
+    public int[] twoArrays(int[] nums) {
         // two array
         int len = nums.length;
 
