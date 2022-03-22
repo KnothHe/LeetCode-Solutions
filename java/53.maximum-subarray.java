@@ -61,7 +61,7 @@ class Solution {
         int len = nums.length, max = nums[0], sum = nums[0];
         for (int i = 1; i < len; i++) {
             sum = nums[i] + (sum > 0 ? sum : 0);
-            // sum = Math.max(sum, nums[i]+sum);
+            // sum = Math.max(nums[i], nums[i]+sum);
             max = Math.max(sum, max);
         }
         return max;
