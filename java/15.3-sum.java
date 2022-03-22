@@ -49,21 +49,14 @@ class Solution {
         Set<List<Integer>> res = new HashSet();
         for (int i = 0; i < len; i++) {
             int n = nums[i];
-            List<List<Integer>> twoRes = twoSum(i+1, len-1, nums, 0-n);
-            for (List<Integer> tr : twoRes) {
-                List<Integer> tmpRes = new ArrayList(3);
-                tmpRes.add(n);
-                tmpRes.addAll(tr);
-                res.add(tmpRes);
-            }
+            List<List<Integer>> twoRes = twoSumWithTarget(i+1, len-1, nums, 0-n);
+            twoRes.forEach(tmpRes -> res.add(tmpRes));
         }
         
-        List<List<Integer>> finalRes = new ArrayList(res.size());
-        finalRes.addAll(res);
-        return finalRes;
+        return new ArrayList(res);
     }
 
-    public List<List<Integer>> twoSum(int s, int e, int[] nums, int target) {
+    public List<List<Integer>> twoSumWithTarget(int s, int e, int[] nums, int target) {
         int len = nums.length;
         List<List<Integer>> res = new ArrayList();
 
@@ -77,7 +70,7 @@ class Solution {
             int sum = ns + ne;
             boolean sc = false, ec = false;
             if (sum == target) {
-                res.add(Arrays.asList(ns, ne));
+                res.add(Arrays.asList(-target, ns, ne));
                 s++;
                 e--;
             } else if (sum < target) {
