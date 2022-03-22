@@ -56,7 +56,17 @@
 // @lc code=start
 class Solution {
     public int maxArea(int[] height) {
-        
+        int len = height.length, s = 0, e = len-1, max = 0;
+        while (s < e) {
+            int hs = height[s], he = height[e];
+            max = Math.max(Math.min(hs, he)*(e-s), max);
+            if (hs < he) {
+                s++;
+            } else {
+                e--;
+            }
+        }
+        return max;
     }
 }
 // @lc code=end
