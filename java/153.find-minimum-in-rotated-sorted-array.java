@@ -73,6 +73,21 @@
 // @lc code=start
 class Solution {
     public int findMin(int[] nums) {
+        int len = nums.length, s = 0, e = len-1;
+        while (s < e) {
+            int mid = (s + e) / 2;
+            int n = nums[mid];
+
+            if (n >= nums[s] && n > nums[e]) {
+                s = mid + 1;
+            } else {
+                e = mid;
+            }
+        }
+        return nums[s];
+    }
+
+    public int oneWay(int[] nums) {
         int len = nums.length;
         int s = 0, e = len-1;
         while (s < e && nums[s] > nums[e]) {
