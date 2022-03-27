@@ -61,6 +61,32 @@
 // @lc code=start
 class Solution {
     public int lengthOfLIS(int[] nums) {
+        // use TreeMap
+        TreeMap<Integer, Integer> dp = new TreeMap<>();
+        dp.put(nums[0], 1);
+        int max = 1;
+        for (int i = 1; i < nums.length; i++) {
+            // find lower key less than current
+            Integer lk = dp.lowerKey(nums[i]);
+            int cmax;
+            if (lk == null) {
+                cmax = 1;
+            } else {
+                cmax = dp.get(lk)+1;
+            }
+
+            Integer ck = dp.ceilingKey(nums[i]);
+            if (ck != null) {
+                dp.remove(ck);
+            }
+
+            dp.put(nums[i], cmax);
+            max = Math.max(cmax, max);
+        }
+        return max;
+    }
+
+    public int O_n2(int[] nums) {
         int[] dp = new int[nums.length];
         dp[0] = 1;
         int gmax = 1;
