@@ -61,10 +61,20 @@
 // @lc code=start
 class Solution {
     public int lengthOfLIS(int[] nums) {
-        int[] dp = new nu
-        for (int i = 0; i < nums.length; i++) {
-
+        int[] dp = new int[nums.length];
+        dp[0] = 1;
+        int gmax = 1;
+        for (int i = 1; i < nums.length; i++) {
+            int max = 0;
+            for (int j = i-1; j >= 0; j--) {
+                if (nums[j] < nums[i]) {
+                    max = Math.max(max, dp[j]);
+                }
+            }
+            dp[i] = max+1;
+            gmax = Math.max(dp[i], gmax);
         }
+        return gmax;
     }
 }
 // @lc code=end
